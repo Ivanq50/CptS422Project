@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" version="28.1.2">
   <diagram name="Page-1" id="3I5pnGcaNMltzT8cqpDs">
-    <mxGraphModel dx="1306" dy="933" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1300" math="0" shadow="0">
+    <mxGraphModel dx="1426" dy="853" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1500" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -45,7 +45,7 @@
             <mxPoint x="800" y="620" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="-y9rDnkdHpA52NDEK-A0-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;dashed=1;dashPattern=1 2;" edge="1" parent="1" source="kgSyhfnq9W8OoYVmr7JO-44" target="kgSyhfnq9W8OoYVmr7JO-49">
+        <mxCell id="-y9rDnkdHpA52NDEK-A0-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;dashed=1;dashPattern=1 2;" parent="1" source="kgSyhfnq9W8OoYVmr7JO-44" target="kgSyhfnq9W8OoYVmr7JO-49" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="kgSyhfnq9W8OoYVmr7JO-44" value="Rent Vehicle" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -68,11 +68,12 @@
         <mxCell id="kgSyhfnq9W8OoYVmr7JO-63" value="Luxury" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="750" y="700" width="120" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="kgSyhfnq9W8OoYVmr7JO-100" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="kgSyhfnq9W8OoYVmr7JO-64" target="kgSyhfnq9W8OoYVmr7JO-99" edge="1">
+        <mxCell id="kgSyhfnq9W8OoYVmr7JO-100" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="kgSyhfnq9W8OoYVmr7JO-64" target="VkOw99garZ46adgMbUk3-2" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="730" y="880" />
             </Array>
+            <mxPoint x="680" y="880" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="kgSyhfnq9W8OoYVmr7JO-64" value="SUV" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -111,11 +112,12 @@
         <mxCell id="kgSyhfnq9W8OoYVmr7JO-76" value="SUV" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="275" y="770" width="120" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="kgSyhfnq9W8OoYVmr7JO-108" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="kgSyhfnq9W8OoYVmr7JO-78" target="kgSyhfnq9W8OoYVmr7JO-99" edge="1">
+        <mxCell id="kgSyhfnq9W8OoYVmr7JO-108" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="kgSyhfnq9W8OoYVmr7JO-78" target="VkOw99garZ46adgMbUk3-2" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="460" y="880" />
             </Array>
+            <mxPoint x="530" y="880" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="kgSyhfnq9W8OoYVmr7JO-78" value="Sedan" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -170,11 +172,11 @@
         <mxCell id="kgSyhfnq9W8OoYVmr7JO-92" value="Register New Member Account" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="30" y="380" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="-y9rDnkdHpA52NDEK-A0-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="kgSyhfnq9W8OoYVmr7JO-99" target="-y9rDnkdHpA52NDEK-A0-1">
+        <mxCell id="-y9rDnkdHpA52NDEK-A0-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="kgSyhfnq9W8OoYVmr7JO-99" target="-y9rDnkdHpA52NDEK-A0-1" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="kgSyhfnq9W8OoYVmr7JO-99" value="Apply Vehicle Rate to Account" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="550" y="850" width="120" height="60" as="geometry" />
+        <mxCell id="kgSyhfnq9W8OoYVmr7JO-99" value="Apply Vehicle Rate to Account X number of days rented for" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="545" y="1020" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="kgSyhfnq9W8OoYVmr7JO-114" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="kgSyhfnq9W8OoYVmr7JO-110" edge="1">
           <mxGeometry relative="1" as="geometry">
@@ -195,42 +197,53 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="kgSyhfnq9W8OoYVmr7JO-115" value="Checkout" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="550" y="1180" width="120" height="80" as="geometry" />
+          <mxGeometry x="545" y="1350" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="kgSyhfnq9W8OoYVmr7JO-117" value="See Checkout Flowchart for Computation of Final Prices" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="870" y="1170" width="130" height="100" as="geometry" />
+          <mxGeometry x="865" y="1340" width="130" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="-y9rDnkdHpA52NDEK-A0-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;jumpStyle=none;" edge="1" parent="1" source="-y9rDnkdHpA52NDEK-A0-1">
+        <mxCell id="-y9rDnkdHpA52NDEK-A0-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;jumpStyle=none;" parent="1" source="-y9rDnkdHpA52NDEK-A0-1" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="530" y="330" as="targetPoint" />
+            <mxPoint x="525" y="470" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="901" y="1015" />
+              <mxPoint x="896" y="1155" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="-y9rDnkdHpA52NDEK-A0-12" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="-y9rDnkdHpA52NDEK-A0-10">
+        <mxCell id="-y9rDnkdHpA52NDEK-A0-12" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="-y9rDnkdHpA52NDEK-A0-10" vertex="1" connectable="0">
           <mxGeometry x="-0.8694" y="3" relative="1" as="geometry">
             <mxPoint y="1" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="-y9rDnkdHpA52NDEK-A0-13" value="Give option to select car again to Premium Members" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="-y9rDnkdHpA52NDEK-A0-10">
+        <mxCell id="-y9rDnkdHpA52NDEK-A0-13" value="Give option to select car again to Premium Members" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="-y9rDnkdHpA52NDEK-A0-10" vertex="1" connectable="0">
           <mxGeometry x="0.7558" y="1" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="-y9rDnkdHpA52NDEK-A0-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-y9rDnkdHpA52NDEK-A0-1" target="kgSyhfnq9W8OoYVmr7JO-115">
+        <mxCell id="-y9rDnkdHpA52NDEK-A0-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-y9rDnkdHpA52NDEK-A0-1" target="kgSyhfnq9W8OoYVmr7JO-115" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="-y9rDnkdHpA52NDEK-A0-15" value="No / Premium Member Selected Second Vehicle" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="-y9rDnkdHpA52NDEK-A0-14">
+        <mxCell id="-y9rDnkdHpA52NDEK-A0-15" value="No / Premium Member Selected Second Vehicle" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="-y9rDnkdHpA52NDEK-A0-14" vertex="1" connectable="0">
           <mxGeometry x="-0.1333" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="-y9rDnkdHpA52NDEK-A0-1" value="Is premium member" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="565" y="970" width="90" height="90" as="geometry" />
+        <mxCell id="-y9rDnkdHpA52NDEK-A0-1" value="Is premium member" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="560" y="1140" width="90" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="-y9rDnkdHpA52NDEK-A0-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.442;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;dashed=1;dashPattern=1 2;" edge="1" parent="1" source="kgSyhfnq9W8OoYVmr7JO-72" target="kgSyhfnq9W8OoYVmr7JO-49">
+        <mxCell id="-y9rDnkdHpA52NDEK-A0-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.442;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;dashed=1;dashPattern=1 2;" parent="1" source="kgSyhfnq9W8OoYVmr7JO-72" target="kgSyhfnq9W8OoYVmr7JO-49" edge="1">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="VkOw99garZ46adgMbUk3-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="VkOw99garZ46adgMbUk3-2" target="kgSyhfnq9W8OoYVmr7JO-99">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="603" y="1000" />
+              <mxPoint x="603" y="1000" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VkOw99garZ46adgMbUk3-2" value="Get number of days&amp;nbsp;&lt;div&gt;vehicle will be rented for&lt;/div&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="525" y="840" width="155" height="80" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
