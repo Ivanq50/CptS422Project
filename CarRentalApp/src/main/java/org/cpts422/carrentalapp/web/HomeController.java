@@ -24,7 +24,7 @@ public class HomeController
         Object username = session.getAttribute("username");
         boolean signedIn = (username != null);
         model.addAttribute("signedIn", signedIn);
-        model.addAttribute("username", username); // may be null
+        model.addAttribute("username", username);
         return "home";
     }
 }
