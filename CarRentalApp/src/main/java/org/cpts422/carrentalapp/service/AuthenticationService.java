@@ -39,7 +39,8 @@ public class AuthenticationService
     {
         var user = users.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid username or password"));
-        if (!encoder.matches(rawPassword, user.getPasswordHash())) {
+        if (!encoder.matches(rawPassword, user.getPasswordHash()))
+        {
             throw new IllegalArgumentException("Invalid username or password");
         }
         return user;

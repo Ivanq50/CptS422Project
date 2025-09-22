@@ -17,12 +17,14 @@ import java.time.LocalDate;
 @Entity
 @Table(
         name = "app_user",
-        uniqueConstraints = {
+        uniqueConstraints =
+                {
                 @UniqueConstraint(name = "user_username", columnNames = {"username"}),
                 @UniqueConstraint(name = "user_dl", columnNames = {"drivers_license_number"})
         }
 )
-public class AppUser {
+public class AppUser
+{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
