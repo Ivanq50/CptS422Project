@@ -1,3 +1,7 @@
+/*
+2 membership types for users
+*/
+
 // Created by : Yevin
 // Created on : Sep 22
 

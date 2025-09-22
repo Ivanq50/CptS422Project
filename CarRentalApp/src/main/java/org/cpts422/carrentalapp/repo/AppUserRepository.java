@@ -1,3 +1,7 @@
+/*
+Finds all users in the database by username and driver's license
+*/
+
 // Created by : Yevin
 // Created on : Sep 22
 

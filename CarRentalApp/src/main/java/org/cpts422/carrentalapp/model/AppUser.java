@@ -1,3 +1,7 @@
+/*
+Gets and Sets users details in the database
+*/
+
 // Created by : Yevin
 // Created on : Sep 22
 
