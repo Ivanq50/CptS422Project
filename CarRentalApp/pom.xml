@@ -30,6 +30,9 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
+        <!-- Updated by:
+        Developer: Yevin
+        Date : Sep 22 -->
         <!-- Validation for form fields such as not being left blank -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
