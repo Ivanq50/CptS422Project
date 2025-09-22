@@ -48,7 +48,7 @@ public class AuthenticationController {
 
             model.addAttribute("flash", "Account created. You can sign in now.");
             // keep user on a confirmation page or redirect to /login later
-            return "register_success";
+            return "register_successful";
         } catch (IllegalArgumentException ex) {
             model.addAttribute("error", ex.getMessage());
             return "register";

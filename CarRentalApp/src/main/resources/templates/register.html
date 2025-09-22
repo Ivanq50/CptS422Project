@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Register • CarRentalApp</title>
+    <style>
+        body { font-family: system-ui, Arial, sans-serif; max-width: 760px; margin: 2rem auto; }
+        form { display:grid; gap:.6rem; }
+        input, select, button { padding:.5rem .7rem; }
+        .error { color:#b00020; }
+    </style>
+</head>
+<body>
+<h1>Create Account</h1>
+
+<p th:if="${error}" class="error" th:text="${error}"></p>
+
+<form th:action="@{/register}" method="post" th:object="${form}">
+    <label>Username
+        <input th:field="*{username}" required minlength="3" maxlength="32"/>
+    </label>
+    <label>Password
+        <input th:field="*{password}" type="password" required minlength="6"/>
+    </label>
+    <label>Age
+        <input th:field="*{age}" type="number" min="0" required/>
+    </label>
+    <label>Driver’s License #
+        <input th:field="*{driversLicenseNumber}" required/>
+    </label>
+    <label>License Expiry
+        <input th:field="*{driversLicenseExpiry}" type="date" required/>
+    </label>
+    <label>Membership
+        <select th:field="*{membershipType}">
+            <option th:value="STANDARD">STANDARD</option>
+            <option th:value="PREMIUM">PREMIUM</option>
+        </select>
+    </label>
+
+    <button type="submit">Create Account</button>
+    <p><a href="/">Back Home</a></p>
+</form>
+</body>
+</html>
