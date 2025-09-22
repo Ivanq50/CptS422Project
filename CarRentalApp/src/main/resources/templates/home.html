@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="${title}">CarRentalApp</title>
+    <style>
+        body { font-family: system-ui, Arial, sans-serif; max-width: 760px; margin: 2rem auto; }
+        .card { border: 1px solid #ddd; border-radius: 12px; padding: 1rem 1.25rem; }
+    </style>
+</head>
+<body>
+<h1 th:text="${title}">CarRentalApp</h1>
+<div class="card">
+    <p th:text="${message}">Working Test</p>
+    <p><a href="/h2" target="_blank">Open H2 Console</a> — JDBC URL:
+        <code>jdbc:h2:mem:car_rental</code>, user <code>sa</code>, password empty.</p>
+</div>
+</body>
+</html>
