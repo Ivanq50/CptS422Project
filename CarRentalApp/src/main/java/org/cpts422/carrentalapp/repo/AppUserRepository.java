@@ -1,5 +1,5 @@
 /*
-Finds all users in the database by username and driver's license
+Finds all users in the database by username and driver's license (Used for Log in)
 */
 
 // Created by : Yevin
@@ -13,9 +13,12 @@ package org.cpts422.carrentalapp.repo;
 import org.cpts422.carrentalapp.model.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface AppUserRepository extends JpaRepository<AppUser, Long>
 {
     boolean existsByUsername(String username);
     boolean existsByDriversLicenseNumber(String driversLicenseNumber);
+    Optional<AppUser> findByUsername(String username);
 }
 
