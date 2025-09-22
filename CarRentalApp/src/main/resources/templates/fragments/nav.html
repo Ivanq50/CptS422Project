@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<body>
+<th:block th:fragment="topnav">
+    <style>
+        .topbar { display:flex; justify-content:space-between; align-items:center;
+            padding:14px 22px; border-bottom:1px solid #eee; }
+        .brand { font-weight:800; font-size:24px; }
+        .navlinks { display:flex; gap:18px; align-items:center; }
+        .link { color:#5b21b6; text-decoration:none; font-weight:600; }
+        .linkbutton { background:none; border:none; padding:0; margin:0;
+            color:#5b21b6; font-weight:600; cursor:pointer; }
+    </style>
+
+    <div class="topbar">
+        <div class="brand">CarRentalApp</div>
+        <div class="navlinks">
+            <a class="link" th:href="@{/}">Home</a>
+
+            <!-- If NOT signed in -->
+            <span th:if="${session.username == null}">
+        <a class="link" th:href="@{/register}">Register</a>
+        <a class="link" th:href="@{/login}">Sign in</a>
+      </span>
+
+            <!-- If signed in -->
+            <span th:if="${session.username != null}">
+        <span>Hello, <strong th:text="${session.username}">user</strong></span>
+        <form th:action="@{/logout}" method="post" style="display:inline">
+          <button class="linkbutton" type="submit">Sign out</button>
+        </form>
+      </span>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

@@ -5,10 +5,6 @@
     <title>CarRentalApp • Welcome</title>
     <style>
         body { font-family: system-ui, Arial, sans-serif; margin: 0; }
-        header { display:flex; justify-content:space-between; align-items:center;
-            padding:14px 24px; border-bottom:1px solid #eee; }
-        .brand { font-weight:700; font-size:24px; }
-        nav a { margin-left:16px; text-decoration:none; }
         main { max-width:900px; margin:40px auto; padding:0 16px; }
         .card { border:1px solid #ddd; border-radius:14px; padding:24px; }
         .actions { margin-top:16px; }
@@ -17,26 +13,22 @@
     </style>
 </head>
 <body>
-<header>
-    <div class="brand">CarRentalApp</div>
-    <nav>
-        <a href="/">Home</a>
-        <a href="/register">Register</a>
-        <a href="/login">Sign in</a>
-    </nav>
-</header>
+
+<!-- shared nav -->
+<div th:replace="~{fragments/nav :: topnav}"></div>
 
 <main>
     <h1>Welcome to CarRentalApp</h1>
+
     <!-- If NOT signed in -->
     <div class="card" th:if="${!signedIn}">
         <p>Create an account or sign in to start renting vehicles.</p>
         <div class="actions">
-            <a class="btn primary" href="/register">Create account</a>
-            <a class="btn" href="/login">Sign in</a>
+            <a class="btn primary" th:href="@{/register}">Create account</a>
+            <a class="btn" th:href="@{/login}">Sign in</a>
         </div>
         <p style="margin-top:12px">
-            Dev only: <a href="/h2" target="_blank">H2 Console</a>
+            Dev only: <a th:href="@{/h2}" target="_blank">H2 Console</a>
             — URL <code>jdbc:h2:mem:car_rental</code>, user <code>sa</code>
         </p>
     </div>
@@ -45,7 +37,7 @@
     <div class="card" th:if="${signedIn}">
         <p>Welcome, <b th:text="${username}">user</b>!</p>
         <div class="actions">
-            <a class="btn primary" href="/cars">Browse cars</a>
+            <a class="btn primary" th:href="@{/cars}">Browse cars</a>
         </div>
     </div>
 </main>
