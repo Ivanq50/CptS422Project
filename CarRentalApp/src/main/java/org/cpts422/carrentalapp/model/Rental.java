@@ -2,7 +2,6 @@ package org.cpts422.carrentalapp.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 public class Rental {
@@ -22,12 +21,12 @@ public class Rental {
     private LocalDate rentalDate;
 
     @Column(nullable = false)
-    private LocalTime expectedReturnDate;
+    private LocalDate expectedReturnDate;
 
     @Column(nullable = false)
-    private LocalTime returnDate;
+    private LocalDate returnDate;
 
-    private LocalDate totalCharge;
+    private double totalCharge;
 
 
     // Getter and setter methods
@@ -39,10 +38,10 @@ public class Rental {
     public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }
     public LocalDate getRentalDate() { return rentalDate; }
     public void setRentalDate(LocalDate rentalDate) { this.rentalDate = rentalDate; }
-    public LocalTime getExpectedReturnDate() { return expectedReturnDate; }
-    public void setExpectedReturnDate(LocalTime expectedReturnDate) { this.expectedReturnDate = expectedReturnDate; }
-    public LocalTime getReturnDate() { return returnDate; }
-    public void setReturnDate(LocalTime returnDate) { this.returnDate = returnDate; }
-    public LocalDate getTotalCharge() { return totalCharge; }
-    public void setTotalCharge(LocalDate totalCharge) { this.totalCharge = totalCharge; }
+    public LocalDate getExpectedReturnDate() { return expectedReturnDate; }
+    public void setExpectedReturnDate(LocalDate expectedReturnDate) { this.expectedReturnDate = expectedReturnDate; }
+    public LocalDate getReturnDate() { return returnDate; }
+    public void setReturnDate(LocalDate returnDate) { this.returnDate = returnDate; }
+    public double getTotalCharge() { return totalCharge; }
+    public void setTotalCharge(double totalCharge) { this.totalCharge = totalCharge; }
 }
