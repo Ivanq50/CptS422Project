@@ -1,13 +1,11 @@
-package org.cpts422.carrentalapp.Controller
-
 package org.cpts422.carrentalapp.controller;
 
 import org.cpts422.carrentalapp.model.Rental;
 import org.cpts422.carrentalapp.model.Vehicle;
 import org.cpts422.carrentalapp.model.AppUser;
-import org.cpts422.carrentalapp.repository.RentalRepository;
-import org.cpts422.carrentalapp.repository.VehicleRepository;
-import org.cpts422.carrentalapp.repository.AppUserRepository;
+import org.cpts422.carrentalapp.repo.RentalRepository;
+import org.cpts422.carrentalapp.repo.VehicleRepository;
+import org.cpts422.carrentalapp.repo.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -26,9 +24,7 @@ public class VehicleController{
     private final AppUserRepository appUserRepository;
 
     @Autowired
-    public VehicleController(VehicleRepository vehicleRepository,
-                             RentalRepository rentalRepository,
-                             AppUserRepository appUserRepository) {
+    public VehicleController(VehicleRepository vehicleRepository, RentalRepository rentalRepository, AppUserRepository appUserRepository) {
         this.vehicleRepository = vehicleRepository;
         this.rentalRepository = rentalRepository;
         this.appUserRepository = appUserRepository;
@@ -41,14 +37,15 @@ public class VehicleController{
         return "vehicles";
     }
 
-    @GetMapping("/rent/{id}")
-    public String rentVehicleForm(@PathVariable Long id, Model model) {
-        Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
+    @GetMapping("/user/{userId}/rentals")
+    public List<Rental> getUserRentals(@PathVariable Long userId) {
+        // Fetch the user
+        AppUser user = appUserRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
-        model.addAttribute("vehicle", vehicle);
-        model.addAttribute("rental", new Rental());
-        return "rentVehicle";
+        // Fetch rentals for that user where returnDate is null
+        List<Rental> rentals = rentalRepository.findByUserAndReturnDateIsNull(user);
+
+        return rentals;
     }
 
     // Process rental
