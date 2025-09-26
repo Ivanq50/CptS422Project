@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Available Vehicles</title>
+</head>
+<body>
+<h1>Available Vehicles</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Type</th>
+        <th>Daily Rate</th>
+        <th>Available</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="vehicle : ${vehicles}">
+        <td th:text="${vehicle.make}"></td>
+        <td th:text="${vehicle.model}"></td>
+        <td th:text="${vehicle.vehicleType}"></td>
+        <td th:text="${vehicle.dailyRate}"></td>
+        <td th:text="${vehicle.available}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
