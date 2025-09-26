@@ -24,6 +24,17 @@ public class Vehicle {
     @Column(nullable = false)
     private boolean available = true;
 
+    public Vehicle() {}
+
+    public Vehicle(String make, String model, VehicleType vehicleType, double dailyRate, boolean available) {
+        this.make = make;
+        this.model = model;
+        this.vehicleType = vehicleType;
+        this.dailyRate = dailyRate;
+        this.available = available;
+    }
+
+
     // Getter and setter methods
     public Long getId() { return id;}
     public void setId(Long id) { this.id = id; }
