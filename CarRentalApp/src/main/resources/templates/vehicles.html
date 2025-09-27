@@ -22,6 +22,17 @@
         <td th:text="${vehicle.vehicleType}"></td>
         <td th:text="${vehicle.dailyRate}"></td>
         <td th:text="${vehicle.available}"></td>
+        <td>
+            <form th:action="@{/rent}" method="post">
+                <input type="hidden" name="vehicleId" th:value="${vehicle.id}" />
+
+                <label>Rental Days:
+                    <input type="number" name="rentalDays" min="1" value="1" required />
+                </label><br/>
+
+                <button type="submit" th:disabled="${!vehicle.available}">Rent</button>
+            </form>
+        </td>
     </tr>
     </tbody>
 </table>

@@ -23,7 +23,7 @@ public class Rental {
     @Column(nullable = false)
     private LocalDate expectedReturnDate;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate returnDate;
 
     private double totalCharge;

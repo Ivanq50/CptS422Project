@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>My Rentals</title>
+</head>
+<body>
+<h1>My Rentals</h1>
+<table border="1">
+  <tr>
+    <th>Vehicle</th>
+    <th>Rental Date</th>
+    <th>Expected Return</th>
+    <th>Total Charge</th>
+  </tr>
+  <tr th:each="rental : ${rentals}">
+    <td th:text="${rental.vehicle.make} + ' ' + ${rental.vehicle.model}"></td>
+    <td th:text="${rental.rentalDate}"></td>
+    <td th:text="${rental.expectedReturnDate}"></td>
+    <td th:text="${rental.totalCharge}"></td>
+  </tr>
+</table>
+</body>
+</html>
