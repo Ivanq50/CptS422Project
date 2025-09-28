@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- FIX: include the fragment by correct path + name -->
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<h1>My Rentals</h1>
+
+<p th:if="${msg}" th:text="${msg}" style="color:#065f46"></p>
+
+<table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+    <tr>
+        <th>Vehicle</th>
+        <th>Rented On</th>
+        <th>Due Back</th>
+        <th>Total (Paid)</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="r : ${rentals}">
+        <td>
+            <span th:text="${r.vehicle.make}">Make</span>
+            <span th:text="${r.vehicle.model}">Model</span>
+        </td>
+        <!-- FIX: use LocalDate fields that exist on Rental -->
+        <td th:text="${#temporals.format(r.rentedAt, 'yyyy-MM-dd')}">-</td>
+        <td th:text="${#temporals.format(r.expectedReturnAt, 'yyyy-MM-dd')}">-</td>
+        <td>$<span th:text="${#numbers.formatDecimal(r.totalCharge,1,2)}">0.00</span></td>
+
+        <td th:text="${r.returnedAt == null ? 'Active' : 'Returned'}">Active</td>
+
+        <td>
+            <form th:if="${r.returnedAt == null}"
+                  th:action="@{'/rentals/' + ${r.id} + '/start-return'}"
+                  method="post">
+                <button type="submit">Return</button>
+            </form>
+            <span th:if="${r.returnedAt != null}">—</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

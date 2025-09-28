@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+# Java / Maven
+target/
+*.iml
+.idea/
+# OS / editors
+Thumbs.db
+*.log
+# macOS
+.DS_Store
+# Java / Maven
+target/
+*.iml
+.idea/
+# OS / editors
+Thumbs.db
+*.log
