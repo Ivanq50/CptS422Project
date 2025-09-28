@@ -36,6 +36,12 @@ public class AppUser
     @Column(name = "password_hash", nullable = false, length = 72)
     private String passwordHash;
 
+    @Column(nullable = false)
+    private double walletBalance = 0.0;
+
+    public double getWalletBalance() { return walletBalance; }
+    public void setWalletBalance(double walletBalance) { this.walletBalance = walletBalance; }
+
     @Column(name = "age", nullable = false)
     private int age;
 

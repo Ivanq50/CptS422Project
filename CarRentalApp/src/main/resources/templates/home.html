@@ -1,45 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <title>CarRentalApp • Welcome</title>
-    <style>
-        body { font-family: system-ui, Arial, sans-serif; margin: 0; }
-        main { max-width:900px; margin:40px auto; padding:0 16px; }
-        .card { border:1px solid #ddd; border-radius:14px; padding:24px; }
-        .actions { margin-top:16px; }
-        .btn { display:inline-block; padding:10px 14px; border-radius:10px; border:1px solid #ccc; text-decoration:none; }
-        .btn.primary { border-color:#000; }
-    </style>
-</head>
 <body>
-
-<!-- shared nav -->
+<!-- FIX: include the fragment by correct path + name -->
 <div th:replace="~{fragments/nav :: topnav}"></div>
 
-<main>
-    <h1>Welcome to CarRentalApp</h1>
-
-    <!-- If NOT signed in -->
-    <div class="card" th:if="${!signedIn}">
-        <p>Create an account or sign in to start renting vehicles.</p>
-        <div class="actions">
-            <a class="btn primary" th:href="@{/register}">Create account</a>
-            <a class="btn" th:href="@{/login}">Sign in</a>
-        </div>
-        <p style="margin-top:12px">
-            Dev only: <a th:href="@{/h2}" target="_blank">H2 Console</a>
-            — URL <code>jdbc:h2:mem:car_rental</code>, user <code>sa</code>
-        </p>
-    </div>
-
-    <!-- If signed in -->
-    <div class="card" th:if="${signedIn}">
-        <p>Welcome, <b th:text="${username}">user</b>!</p>
-        <div class="actions">
-            <a class="btn primary" th:href="@{/vehicles}">Browse cars</a>
-        </div>
-    </div>
-</main>
+<h1>Welcome</h1>
+<p>Use the navigation to browse vehicles or view your rentals.</p>
 </body>
 </html>
