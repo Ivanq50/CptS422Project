@@ -28,7 +28,6 @@ public class AuthenticationService
         this.encoder = encoder;
     }
 
-    // already used by registration
     public AppUser register(AppUser u, String rawPassword)
     {
         u.setPasswordHash(encoder.encode(rawPassword));

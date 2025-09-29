@@ -39,9 +39,6 @@ public class AppUser
     @Column(nullable = false)
     private double walletBalance = 0.0;
 
-    public double getWalletBalance() { return walletBalance; }
-    public void setWalletBalance(double walletBalance) { this.walletBalance = walletBalance; }
-
     @Column(name = "age", nullable = false)
     private int age;
 
@@ -69,4 +66,6 @@ public class AppUser
     public void setDriversLicenseExpiry(LocalDate driversLicenseExpiry) { this.driversLicenseExpiry = driversLicenseExpiry; }
     public MembershipType getMembershipType() { return membershipType; }
     public void setMembershipType(MembershipType membershipType) { this.membershipType = membershipType; }
+    public double getWalletBalance() { return walletBalance; }
+    public void setWalletBalance(double walletBalance) { this.walletBalance = walletBalance; }
 }
