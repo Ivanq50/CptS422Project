@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Create Account</title>
+    <style>
+        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; }
+        .wrap { margin:2rem; }
+        .card { max-width: 640px; padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 12px; }
+        label { display: block; font-weight: 600; margin-top: 1rem; }
+        input, select { width: 100%; padding: .6rem .7rem; border: 1px solid #d1d5db; border-radius: .5rem; }
+        .actions { margin-top: 1.25rem; display: flex; gap: .75rem; align-items: center; }
+        .btn { background: #5b21b6; color: white; padding: .6rem 1rem; border-radius: .5rem; border: 0; cursor: pointer; }
+        .link { color: #5b21b6; text-decoration: none; }
+        .err { color: #dc2626; font-size: .9rem; margin-top: .35rem; }
+        .title { font-size: 1.5rem; font-weight: 800; margin: 1rem 0; }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments/nav :: topnav}"></div>
+
+<div class="wrap">
+    <h1 class="title">Create your CarRentalApp account</h1>
+
+    <div class="card">
+        <form th:action="@{/register}" th:object="${form}" method="post">
+            <label>Username
+                <input type="text" th:field="*{username}" placeholder="jdoe123"/>
+                <div class="err" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username error</div>
+            </label>
+
+            <label>Age
+                <input type="number" min="0" th:field="*{age}" placeholder="21"/>
+                <div class="err" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age error</div>
+            </label>
+
+            <label>Password
+                <input type="password" th:field="*{password}" placeholder="********"/>
+                <div class="err" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</div>
+            </label>
+
+            <label>Driver’s License Number
+                <input type="text" th:field="*{driversLicenseNumber}" placeholder="DL-1234567"/>
+                <div class="err" th:if="${#fields.hasErrors('driversLicenseNumber')}" th:errors="*{driversLicenseNumber}">DL error</div>
+            </label>
+
+            <label>Driver’s License Expiry
+                <input type="date" th:field="*{driversLicenseExpiry}"/>
+                <div class="err" th:if="${#fields.hasErrors('driversLicenseExpiry')}" th:errors="*{driversLicenseExpiry}">Expiry error</div>
+            </label>
+
+            <label>Membership Type
+                <select th:field="*{membershipType}">
+                    <option value="" disabled selected>-- Select --</option>
+                    <option th:each="t : ${membershipTypes}" th:value="${t}" th:text="${t}"></option>
+                </select>
+                <div class="err" th:if="${#fields.hasErrors('membershipType')}" th:errors="*{membershipType}">Membership error</div>
+            </label>
+
+            <div class="actions">
+                <button class="btn" type="submit">Create account</button>
+                <a class="link" th:href="@{/}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
