@@ -65,7 +65,7 @@ public class CartController {
         double amount = carts.total(cart);
         try {
             accounts.debit(uid, amount);
-        } catch (InsufficientFundsException ex) {
+        } catch (org.cpts422.carrentalapp.service.error.InsufficientFundsException ex) {
             ra.addFlashAttribute("error", ex.getMessage());
             return "redirect:/cart";
         }
@@ -76,7 +76,7 @@ public class CartController {
 
         cart.clearType(org.cpts422.carrentalapp.web.cart.CartItemType.RENT);
         ra.addFlashAttribute("msg", "Rental(s) confirmed.");
-        return "redirect:/my-rentals"; // <- hyphen, not underscore
+        return "redirect:/my-rentals";
     }
 
 

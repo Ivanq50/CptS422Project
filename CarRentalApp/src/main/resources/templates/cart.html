@@ -6,8 +6,9 @@
 
 <h1>Cart</h1>
 
-<!-- Flash message -->
-<p th:if="${msg}" th:text="${msg}" style="color:#065f46; margin:8px 0;"></p>
+<!-- Flash messages -->
+<p th:if="${msg}"    th:text="${msg}"    style="color:#065f46; margin:8px 0;"></p>
+<p th:if="${error}"  th:text="${error}"  style="color:#b91c1c; margin:8px 0;"></p>
 
 <!-- When the cart is totally empty -->
 <div th:if="${#lists.isEmpty(cart.items)}" style="margin-top:12px;">
@@ -31,9 +32,7 @@
         </tr>
         </thead>
         <tbody>
-        <!-- show only RENT rows -->
-        <tr th:each="it, idx : ${cart.items}"
-            th:if="${it.type.name() == 'RENT'}">
+        <tr th:each="it, idx : ${cart.items}" th:if="${it.type.name() == 'RENT'}">
             <td th:text="${idx.index + 1}">1</td>
             <td th:text="${it.vehicleLabel}">Make Model</td>
             <td th:text="${it.days}">1</td>
@@ -41,20 +40,20 @@
             <!-- Original (base) -->
             <td>
                 $<span th:text="${it.baseAmount != null ?
-                             #numbers.formatDecimal(it.baseAmount,1,2) : '0.00'}">0.00</span>
+                                 #numbers.formatDecimal(it.baseAmount,1,2) : '0.00'}">0.00</span>
             </td>
 
             <!-- Discount -->
             <td>
-            <span th:if="${it.discountAmount != null and it.discountAmount > 0}"
-                  style="color:#065f46;">−$<span th:text="${#numbers.formatDecimal(it.discountAmount,1,2)}">0.00</span></span>
+                <span th:if="${it.discountAmount != null and it.discountAmount > 0}"
+                      style="color:#065f46;">−$<span th:text="${#numbers.formatDecimal(it.discountAmount,1,2)}">0.00</span></span>
                 <span th:if="${it.discountAmount == null or it.discountAmount == 0}">—</span>
             </td>
 
             <!-- Surcharge -->
             <td>
-            <span th:if="${it.surchargeAmount != null and it.surchargeAmount > 0}"
-                  style="color:#b45309;">+$<span th:text="${#numbers.formatDecimal(it.surchargeAmount,1,2)}">0.00</span></span>
+                <span th:if="${it.surchargeAmount != null and it.surchargeAmount > 0}"
+                      style="color:#b45309;">+$<span th:text="${#numbers.formatDecimal(it.surchargeAmount,1,2)}">0.00</span></span>
                 <span th:if="${it.surchargeAmount == null or it.surchargeAmount == 0}">—</span>
             </td>
 
@@ -62,14 +61,14 @@
             <td>$<span th:text="${#numbers.formatDecimal(it.amount,1,2)}">0.00</span></td>
 
             <td>
-                <form th:action="@{/cart/remove}" method="post" style="display:inline;">
-                    <input type="hidden" name="index" th:value="${idx.index}">
+                <!-- controller expects /cart/remove/{idx} -->
+                <form th:action="@{'/cart/remove/' + ${idx.index}}" method="post" style="display:inline;">
+                    <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
                     <button type="submit">Remove</button>
                 </form>
             </td>
         </tr>
 
-        <!-- fallback row if there are no RENT items -->
         <tr th:if="${!cart.hasRentItems()}">
             <td colspan="8">No rental items.</td>
         </tr>
@@ -80,6 +79,7 @@
     <form th:if="${cart.hasRentItems()}"
           th:action="@{/cart/checkout-rent}" method="post"
           style="margin-top:10px;">
+        <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
         <button type="submit">Checkout Rentals</button>
     </form>
 </section>
@@ -97,21 +97,18 @@
         </tr>
         </thead>
         <tbody>
-        <!-- show only PENALTY rows -->
-        <tr th:each="it, idx : ${cart.items}"
-            th:if="${it.type.name() == 'PENALTY'}">
+        <tr th:each="it, idx : ${cart.items}" th:if="${it.type.name() == 'PENALTY'}">
             <td th:text="${idx.index + 1}">1</td>
             <td th:text="${it.vehicleLabel}">Penalty</td>
             <td>$<span th:text="${#numbers.formatDecimal(it.amount,1,2)}">0.00</span></td>
             <td>
-                <form th:action="@{/cart/remove}" method="post" style="display:inline;">
-                    <input type="hidden" name="index" th:value="${idx.index}">
+                <form th:action="@{'/cart/remove/' + ${idx.index}}" method="post" style="display:inline;">
+                    <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
                     <button type="submit">Remove</button>
                 </form>
             </td>
         </tr>
 
-        <!-- fallback row if there are no PENALTY items -->
         <tr th:if="${!cart.hasPenaltyItems()}">
             <td colspan="4">No penalties to pay.</td>
         </tr>
@@ -120,8 +117,9 @@
 
     <!-- Checkout penalties -->
     <form th:if="${cart.hasPenaltyItems()}"
-          th:action="@{/cart/checkout-return}" method="post"
+          th:action="@{/cart/checkout-penalty-and-return}" method="post"
           style="margin-top:10px;">
+        <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
         <button type="submit">Pay Penalties & Return</button>
     </form>
 </section>
@@ -130,7 +128,7 @@
 <section th:if="${!#lists.isEmpty(cart.items)}" style="margin-top:24px;">
     <h3 style="margin:8px 0;">
         Total: $
-        <span th:text="${#numbers.formatDecimal(cart.total(),1,2)}">0.00</span>
+        <span th:text="${#numbers.formatDecimal(total,1,2)}">0.00</span>
     </h3>
 </section>
 </body>
