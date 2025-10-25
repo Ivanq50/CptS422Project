@@ -9,18 +9,15 @@
         }
         .brand { font-weight:800; font-size:24px; }
 
-        /* Container for all right-side content */
         .navlinks {
-            display:flex; align-items:center; gap:40px; /* space between Home and the rest */
+            display:flex; align-items:center; gap:40px;
         }
 
-        /* Even spacing between the actual menu links */
         .menu {
-            display:flex; align-items:center; gap:36px; /* main link spacing */
-            flex-wrap:wrap; row-gap:8px;                /* graceful wrap on small screens */
+            display:flex; align-items:center; gap:36px;
+            flex-wrap:wrap; row-gap:8px;
         }
 
-        /* Greeting + sign-out grouped with its own spacing */
         .auth {
             display:flex; align-items:center; gap:16px;
             margin-left:8px;
@@ -37,27 +34,28 @@
         <div class="brand">CarRentalApp</div>
 
         <div class="navlinks">
+            <!-- ✅ Home points to root "/" -->
             <a class="link" th:href="@{/}">Home</a>
 
-            <!-- Logged OUT -->
-            <div class="menu" th:if="${session.username == null}">
+            <!-- ✅ Logged OUT -->
+            <div class="menu" th:if="${session.userId == null}">
                 <a class="link" th:href="@{/register}">Register</a>
                 <a class="link" th:href="@{/login}">Sign in</a>
             </div>
 
-            <!-- Logged IN -->
-            <div class="menu" th:if="${session.username != null}">
+            <!-- ✅ Logged IN -->
+            <div class="menu" th:if="${session.userId != null}">
                 <a class="link" th:href="@{/vehicles}">Vehicles</a>
                 <a class="link" th:href="@{/my-rentals}">My Rentals</a>
                 <a class="link" th:href="@{/cart}">Cart</a>
                 <a class="link" th:href="@{/account}">Account</a>
 
                 <span class="auth">
-          <span>Hello, <strong th:text="${session.username}">user</strong></span>
-          <form th:action="@{/logout}" method="post" style="display:inline">
-            <button class="linkbutton" type="submit">Sign out</button>
-          </form>
-        </span>
+                    <span>Hello, <strong th:text="${session.username}">User</strong></span>
+                    <form th:action="@{/logout}" method="post" style="display:inline">
+                        <button class="linkbutton" type="submit">Sign out</button>
+                    </form>
+                </span>
             </div>
         </div>
     </div>

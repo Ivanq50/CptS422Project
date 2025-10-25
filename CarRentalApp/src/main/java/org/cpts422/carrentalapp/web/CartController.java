@@ -5,6 +5,7 @@ import org.cpts422.carrentalapp.model.AppUser;
 import org.cpts422.carrentalapp.model.Rental;
 import org.cpts422.carrentalapp.model.Vehicle;
 import org.cpts422.carrentalapp.service.*;
+import org.cpts422.carrentalapp.service.error.InsufficientFundsException;
 import org.cpts422.carrentalapp.web.cart.Cart;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,8 +47,10 @@ public class CartController {
         AppUser user = accounts.getById(uid);
         Vehicle v = vehicles.get(vehicleId);
 
-        if (days <= 0) { ra.addFlashAttribute("msg", "Days must be >= 1"); return "redirect:/vehicles"; }
-        if (!Boolean.TRUE.equals(v.getAvailable())) { ra.addFlashAttribute("msg", "Vehicle not available"); return "redirect:/vehicles"; }
+        if (days <= 0) {
+            ra.addFlashAttribute("error", "Days must be >= 1");
+            return "redirect:/vehicles";
+        }
 
         carts.addRentLine(cart, user, v, days);
         ra.addFlashAttribute("msg", "Added to cart.");
@@ -60,26 +63,46 @@ public class CartController {
         if (uid == null) return "redirect:/login";
 
         double amount = carts.total(cart);
-        accounts.debit(uid, amount);
+        try {
+            accounts.debit(uid, amount);
+        } catch (InsufficientFundsException ex) {
+            ra.addFlashAttribute("error", ex.getMessage());
+            return "redirect:/cart";
+        }
 
-        cart.getItems().stream().filter(i -> i.getType().name().equals("RENT")).forEach(it -> {
-            rentals.createRental(uid, it.getVehicleId(), it.getDays());
-        });
+        cart.getItems().stream()
+                .filter(i -> i.getType().name().equals("RENT"))
+                .forEach(it -> rentals.createRental(uid, it.getVehicleId(), it.getDays()));
 
         cart.clearType(org.cpts422.carrentalapp.web.cart.CartItemType.RENT);
         ra.addFlashAttribute("msg", "Rental(s) confirmed.");
-        return "redirect:/my_rentals";
+        return "redirect:/my-rentals"; // <- hyphen, not underscore
+    }
+
+
+    @GetMapping("/add-penalty")
+    public String addPenaltyGet(@RequestParam Long rentalId,
+                                RedirectAttributes ra,
+                                HttpSession session) {
+        return addPenalty(rentalId, ra, session);
     }
 
     @PostMapping("/add-penalty")
-    public String addPenalty(@RequestParam Long rentalId, RedirectAttributes ra, HttpSession session) {
+    public String addPenalty(@RequestParam Long rentalId,
+                             RedirectAttributes ra,
+                             HttpSession session) {
         Long uid = (Long) session.getAttribute("userId");
         if (uid == null) return "redirect:/login";
         AppUser user = accounts.getById(uid);
 
         Rental r = rentals.getById(rentalId);
         double penalty = pricing.computeLatePenalty(r, user, pricing.now());
-        if (penalty <= 0) { ra.addFlashAttribute("msg", "No penalty due."); return "redirect:/cart"; }
+
+        if (penalty <= 0.0) {
+            rentals.markReturned(r, pricing.now());
+            ra.addFlashAttribute("msg", "Vehicle returned. No penalty due.");
+            return "redirect:/my-rentals";
+        }
 
         carts.addPenaltyLine(cart, r, penalty);
         ra.addFlashAttribute("msg", "Late return penalty added to cart.");
@@ -94,14 +117,20 @@ public class CartController {
         if (uid == null) return "redirect:/login";
 
         double amount = carts.total(cart);
-        accounts.debit(uid, amount);
+        try {
+            accounts.debit(uid, amount);
+        } catch (InsufficientFundsException ex) {
+            ra.addFlashAttribute("error", ex.getMessage());
+            return "redirect:/cart";
+        }
+
         cart.clearType(org.cpts422.carrentalapp.web.cart.CartItemType.PENALTY);
 
         Rental r = rentals.getById(rentalId);
         rentals.markReturned(r, pricing.now());
 
         ra.addFlashAttribute("msg", "Penalty paid and vehicle returned.");
-        return "redirect:/my_rentals";
+        return "redirect:/my-rentals";
     }
 
     @PostMapping("/remove/{idx}")

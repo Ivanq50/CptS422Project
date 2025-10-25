@@ -59,6 +59,10 @@ public class PricingService
         return round2(perDayPenalty * overdueDays);
     }
 
+    public double computeLatePenalty(Rental rental, AppUser user, LocalDateTime asOf) {
+        return penaltyForReturn(rental, asOf);
+    }
+
     public LocalDate today() { return LocalDate.now(); }
     public LocalDateTime now() { return LocalDateTime.now(); }
 

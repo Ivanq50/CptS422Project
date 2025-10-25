@@ -3,7 +3,10 @@ package org.cpts422.carrentalapp.web;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.cpts422.carrentalapp.model.AppUser;
+import org.cpts422.carrentalapp.model.MembershipType;
 import org.cpts422.carrentalapp.service.AuthenticationService;
+import org.cpts422.carrentalapp.service.error.DriversLicenseTakenException;
+import org.cpts422.carrentalapp.service.error.DuplicateUsernameException;
 import org.cpts422.carrentalapp.web.datatransfers.LoginForm;
 import org.cpts422.carrentalapp.web.datatransfers.RegistrationForm;
 import org.springframework.stereotype.Controller;
@@ -17,6 +20,10 @@ public class AuthenticationController {
     private final AuthenticationService auth;
 
     public AuthenticationController(AuthenticationService auth) { this.auth = auth; }
+
+    // Always have dropdown options available
+    @ModelAttribute("membershipTypes")
+    public MembershipType[] membershipTypes() { return MembershipType.values(); }
 
     @GetMapping("/login")
     public String loginPage(Model model) {
@@ -41,7 +48,9 @@ public class AuthenticationController {
 
     @GetMapping("/register")
     public String registerPage(Model model) {
-        model.addAttribute("form", new RegistrationForm());
+        if (!model.containsAttribute("form")) {
+            model.addAttribute("form", new RegistrationForm());
+        }
         return "register";
     }
 
@@ -52,8 +61,14 @@ public class AuthenticationController {
         try {
             auth.register(form);
             return "register_successful";
+        } catch (DuplicateUsernameException ex) {
+            errors.rejectValue("username", "duplicate", ex.getMessage());
+            return "register";
+        } catch (DriversLicenseTakenException ex) {
+            errors.rejectValue("driversLicenseNumber", "duplicate", ex.getMessage());
+            return "register";
         } catch (RuntimeException ex) {
-            errors.reject("registration", ex.getMessage());
+            errors.reject("registration", ex.getMessage() == null ? "Registration failed." : ex.getMessage());
             return "register";
         }
     }

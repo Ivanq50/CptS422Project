@@ -20,19 +20,21 @@ public class AccountController {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return "redirect:/login";
         AppUser user = accounts.getById(userId);
-        model.addAttribute("currentUser", user);
+        model.addAttribute("user", user);
         return "account";
     }
 
     @PostMapping("/account/add-funds")
-    public String addFunds(HttpSession session, @RequestParam double amount, RedirectAttributes ra) {
+    public String addFunds(HttpSession session,
+                           @RequestParam double amount,
+                           RedirectAttributes ra) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return "redirect:/login";
         try {
             accounts.addFunds(userId, amount);
             ra.addFlashAttribute("msg", "Funds added.");
-        } catch (IllegalArgumentException ex) {
-            ra.addFlashAttribute("msg", ex.getMessage());
+        } catch (RuntimeException ex) {
+            ra.addFlashAttribute("error", ex.getMessage());
         }
         return "redirect:/account";
     }

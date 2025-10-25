@@ -34,8 +34,14 @@ public class Vehicle {
         this.available = available;
     }
 
-
     // Getter and setter methods
+    public boolean isAvailable() {
+        return Boolean.TRUE.equals(this.available);
+    }
+    public boolean getAvailable() {
+        return isAvailable();
+    }
+
     public Long getId() { return id;}
     public void setId(Long id) { this.id = id; }
     public VehicleType getVehicleType() { return vehicleType; }
@@ -46,6 +52,6 @@ public class Vehicle {
     public void setModel(String model) { this.model = model; }
     public double getDailyRate() { return dailyRate; }
     public void setDailyRate(double dailyRate) { this.dailyRate = dailyRate; }
-    public boolean isAvailable() { return available; }
+
     public void setAvailable(boolean available) { this.available = available; }
 }
