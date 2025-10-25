@@ -1,49 +1,39 @@
-// Created by : Yevin
-// Created on : Sep 28
-
-// Last Updated by : Yevin
-// Last Updated on : Sep 28
-
 package org.cpts422.carrentalapp.web;
 
 import jakarta.servlet.http.HttpSession;
 import org.cpts422.carrentalapp.model.AppUser;
-import org.cpts422.carrentalapp.repo.AppUserRepository;
+import org.cpts422.carrentalapp.service.AccountService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-public class AccountController
-{
+public class AccountController {
 
-    private final AppUserRepository users;
+    private final AccountService accounts;
 
-    public AccountController(AppUserRepository users)
-    {
-        this.users = users;
-    }
+    public AccountController(AccountService accounts) { this.accounts = accounts; }
 
     @GetMapping("/account")
-    public String account(HttpSession session, Model model)
-    {
+    public String account(Model model, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-        AppUser user = users.findById(userId).orElseThrow();
-        model.addAttribute("user", user);
+        if (userId == null) return "redirect:/login";
+        AppUser user = accounts.getById(userId);
+        model.addAttribute("currentUser", user);
         return "account";
     }
 
     @PostMapping("/account/add-funds")
-    public String addFunds(HttpSession session, @RequestParam double amount, RedirectAttributes ra)
-    {
-        if (amount <= 0) { ra.addFlashAttribute("msg", "Enter a positive amount."); return "redirect:/account"; }
-
+    public String addFunds(HttpSession session, @RequestParam double amount, RedirectAttributes ra) {
         Long userId = (Long) session.getAttribute("userId");
-        AppUser user = users.findById(userId).orElseThrow();
-        user.setWalletBalance(Math.round((user.getWalletBalance() + amount) * 100.0) / 100.0);
-        users.save(user);
-        ra.addFlashAttribute("msg", "Funds added.");
+        if (userId == null) return "redirect:/login";
+        try {
+            accounts.addFunds(userId, amount);
+            ra.addFlashAttribute("msg", "Funds added.");
+        } catch (IllegalArgumentException ex) {
+            ra.addFlashAttribute("msg", ex.getMessage());
+        }
         return "redirect:/account";
     }
 }
