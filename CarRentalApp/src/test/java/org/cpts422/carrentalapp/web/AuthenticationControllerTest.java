@@ -126,4 +126,106 @@ class AuthenticationControllerTest {
         assertEquals("redirect:/", view);
         assertTrue(session.isInvalid());
     }
+
+    @Test
+    void registerPageAddsForm() {
+        Model model = new ExtendedModelMap();
+
+        String view = controller.registerPage(model);
+
+        assertEquals("register", view);
+        assertTrue(model.containsAttribute("form"));
+        assertTrue(model.getAttribute("form") instanceof RegistrationForm);
+    }
+
+    @Test
+    void registerPageKeepsExistingForm() {
+        Model model = new ExtendedModelMap();
+        model.addAttribute("form", new RegistrationForm());
+
+        String view = controller.registerPage(model);
+
+        assertEquals("register", view);
+        assertTrue(model.containsAttribute("form"));
+    }
+
+    @Test
+    void registerWithErrorsReturnsRegister() {
+        RegistrationForm form = new RegistrationForm();
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        String view = controller.register(form, bindingResult);
+
+        assertEquals("register", view);
+        verify(bindingResult).hasErrors();
+        verifyNoInteractions(auth);
+    }
+
+    @Test
+    void registerDuplicateUsernameReturnsError() {
+        RegistrationForm form = new RegistrationForm();
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(auth.register(form)).thenThrow(new org.cpts422.carrentalapp.service.error.DuplicateUsernameException("taken"));
+
+        String view = controller.register(form, bindingResult);
+
+        assertEquals("register", view);
+        verify(bindingResult).rejectValue(eq("username"), eq("duplicate"), anyString());
+    }
+
+    @Test
+    void registerDuplicateDriversLicenseReturnsError() {
+        RegistrationForm form = new RegistrationForm();
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(auth.register(form)).thenThrow(new org.cpts422.carrentalapp.service.error.DriversLicenseTakenException("dl-taken"));
+
+        String view = controller.register(form, bindingResult);
+
+        assertEquals("register", view);
+        verify(bindingResult).rejectValue(eq("driversLicenseNumber"), eq("duplicate"), anyString());
+    }
+
+    @Test
+    void registerRuntimeErrorMessageReturnsRegister() {
+        RegistrationForm form = new RegistrationForm();
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(auth.register(form)).thenThrow(new RuntimeException("Test"));
+
+        String view = controller.register(form, bindingResult);
+
+        assertEquals("register", view);
+        verify(bindingResult).reject(eq("registration"), anyString());
+    }
+
+    @Test
+    void registerRuntimeNullErrorDisplaysDefaultMessage() {
+        RegistrationForm form = new RegistrationForm();
+        when(bindingResult.hasErrors()).thenReturn(false);
+        RuntimeException ex = new RuntimeException() { @Override public String getMessage() { return null; } };
+        when(auth.register(form)).thenThrow(ex);
+
+        String view = controller.register(form, bindingResult);
+
+        assertEquals("register", view);
+        verify(bindingResult).reject(eq("registration"), anyString());
+    }
+
+    @Test
+    void registerSuccessful() {
+        RegistrationForm form = new RegistrationForm();
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(auth.register(form)).thenReturn(new AppUser());
+
+        String view = controller.register(form, bindingResult);
+
+        assertEquals("register_successful", view);
+    }
+
+    @Test
+    void membershipTypesReturnsValues() {
+        assertArrayEquals(
+                org.cpts422.carrentalapp.model.MembershipType.values(),
+                controller.membershipTypes()
+        );
+    }
 }
