@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    33.3%
+    100%
   </span>
   <span class="absValue">
-    (1/3)
+    (3/3)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/4)
+    (4/4)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    8.3%
+    100%
   </span>
   <span class="absValue">
-    (1/12)
+    (12/12)
   </span>
 </td>
 </tr>
@@ -106,26 +106,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @GetMapping(&quot;/account&quot;)
 &nbsp;    public String account(Model model, HttpSession session) {
-<b class="nc">&nbsp;        Long userId = (Long) session.getAttribute(&quot;userId&quot;);</b>
-<b class="nc">&nbsp;        if (userId == null) return &quot;redirect:/login&quot;;</b>
-<b class="nc">&nbsp;        AppUser user = accounts.getById(userId);</b>
-<b class="nc">&nbsp;        model.addAttribute(&quot;user&quot;, user);</b>
-<b class="nc">&nbsp;        return &quot;account&quot;;</b>
+<b class="fc">&nbsp;        Long userId = (Long) session.getAttribute(&quot;userId&quot;);</b>
+<b class="fc">&nbsp;        if (userId == null) return &quot;redirect:/login&quot;;</b>
+<b class="fc">&nbsp;        AppUser user = accounts.getById(userId);</b>
+<b class="fc">&nbsp;        model.addAttribute(&quot;user&quot;, user);</b>
+<b class="fc">&nbsp;        return &quot;account&quot;;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @PostMapping(&quot;/account/add-funds&quot;)
 &nbsp;    public String addFunds(HttpSession session,
 &nbsp;                           @RequestParam double amount,
 &nbsp;                           RedirectAttributes ra) {
-<b class="nc">&nbsp;        Long userId = (Long) session.getAttribute(&quot;userId&quot;);</b>
-<b class="nc">&nbsp;        if (userId == null) return &quot;redirect:/login&quot;;</b>
+<b class="fc">&nbsp;        Long userId = (Long) session.getAttribute(&quot;userId&quot;);</b>
+<b class="fc">&nbsp;        if (userId == null) return &quot;redirect:/login&quot;;</b>
 &nbsp;        try {
-<b class="nc">&nbsp;            accounts.addFunds(userId, amount);</b>
-<b class="nc">&nbsp;            ra.addFlashAttribute(&quot;msg&quot;, &quot;Funds added.&quot;);</b>
+<b class="fc">&nbsp;            accounts.addFunds(userId, amount);</b>
+<b class="fc">&nbsp;            ra.addFlashAttribute(&quot;msg&quot;, &quot;Funds added.&quot;);</b>
 &nbsp;        } catch (RuntimeException ex) {
-<b class="nc">&nbsp;            ra.addFlashAttribute(&quot;error&quot;, ex.getMessage());</b>
+<b class="fc">&nbsp;            ra.addFlashAttribute(&quot;error&quot;, ex.getMessage());</b>
 &nbsp;        }
-<b class="nc">&nbsp;        return &quot;redirect:/account&quot;;</b>
+<b class="fc">&nbsp;        return &quot;redirect:/account&quot;;</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -151,7 +151,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-10-29 12:28</div>
+    <div style="float:right;">generated on 2025-10-29 12:45</div>
 </div>
 </body>
 </html>

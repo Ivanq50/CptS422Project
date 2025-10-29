@@ -57,7 +57,7 @@ class AuthenticationControllerTest {
     void loginBindingErrorsReturnsLogin() {
         LoginForm form = new LoginForm();
         form.setUsername(""); // Invalid
-        form.setPassword("short"); // invalid
+        form.setPassword("123"); // invalid too short
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
@@ -91,28 +91,28 @@ class AuthenticationControllerTest {
     @Test
     void loginSuccessSetsSessionAndRedirects() throws Exception {
         LoginForm form = new LoginForm();
-        form.setUsername("alice");
+        form.setUsername("Test");
         form.setPassword("correct-password");
 
         when(bindingResult.hasErrors()).thenReturn(false);
 
         AppUser u = new AppUser();
-        u.setUsername("alice");
+        u.setUsername("Test");
 
         // Inject ID
         java.lang.reflect.Field f = AppUser.class.getDeclaredField("id");
         f.setAccessible(true);
         f.set(u, 100L);
 
-        when(auth.authenticate("alice", "correct-password")).thenReturn(u);
+        when(auth.authenticate("Test", "correct-password")).thenReturn(u);
 
         MockHttpSession session = new MockHttpSession();
         String view = controller.login(form, bindingResult, session);
 
         assertEquals("redirect:/", view);
-        assertEquals("alice", session.getAttribute("username"));
+        assertEquals("Test", session.getAttribute("username"));
         assertEquals(100L, session.getAttribute("userId"));
-        verify(auth).authenticate("alice", "correct-password");
+        verify(auth).authenticate("Test", "correct-password");
     }
 
     @Test
@@ -177,7 +177,7 @@ class AuthenticationControllerTest {
     void registerDuplicateDriversLicenseReturnsError() {
         RegistrationForm form = new RegistrationForm();
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(auth.register(form)).thenThrow(new org.cpts422.carrentalapp.service.error.DriversLicenseTakenException("dl-taken"));
+        when(auth.register(form)).thenThrow(new org.cpts422.carrentalapp.service.error.DriversLicenseTakenException("License-taken"));
 
         String view = controller.register(form, bindingResult);
 
