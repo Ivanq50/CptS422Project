@@ -1,17 +1,12 @@
 package org.cpts422.carrentalapp.service;
 
-
 import org.cpts422.carrentalapp.model.AppUser;
 import org.cpts422.carrentalapp.repo.AppUserRepository;
 import org.cpts422.carrentalapp.service.error.InsufficientFundsException;
 import org.cpts422.carrentalapp.service.error.UserNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -22,97 +17,88 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
 
-    @Mock
-    private AppUserRepository userRepository;
+    @Mock AppUserRepository users;
+    @InjectMocks AccountService service;
 
-    @InjectMocks
-    private AccountService accountService;
+    @Test
+    void getByIdReturnsUser() {
+        AppUser u = new AppUser();
+        when(users.findById(7L)).thenReturn(Optional.of(u));
 
-    private AppUser user;
+        AppUser out = service.getById(7L);
 
-    @BeforeEach
-    void setUp() {
-        user = new AppUser();
-        user.setUsername("tytyruss");
-        user.setWalletBalance(100.0);
+        assertSame(u, out);
+        verify(users).findById(7L);
     }
 
     @Test
-    void testGetByIdFound() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
-        AppUser result = accountService.getById(1L);
-
-        assertEquals(user, result);
-        verify(userRepository).findById(1L);
+    void getByIdThrowsExceptionWhenUserIsMissing() {
+        when(users.findById(9L)).thenReturn(Optional.empty());
+        assertThrows(UserNotFoundException.class, () -> service.getById(9L));
+        verify(users).findById(9L);
     }
 
     @Test
-    void testGetByIdNotFound() {
-        when(userRepository.findById(2L)).thenReturn(Optional.empty());
+    void getByUsernameReturnsUsername() {
+        AppUser u = new AppUser();
+        when(users.findByUsername("Test")).thenReturn(Optional.of(u));
 
-        assertThrows(UserNotFoundException.class, () -> accountService.getById(2L));
+        AppUser out = service.getByUsername("Test");
+
+        assertSame(u, out);
+        verify(users).findByUsername("Test");
     }
 
     @Test
-    void testGetByUsernameFound() {
-        when(userRepository.findByUsername("tytyruss")).thenReturn(Optional.of(user));
-
-        AppUser result = accountService.getByUsername("tytyruss");
-
-        assertEquals(user, result);
-        verify(userRepository).findByUsername("tytyruss");
+    void getByUsernameThrowsExceptionWhenMissing() {
+        when(users.findByUsername("Test")).thenReturn(Optional.empty());
+        assertThrows(UserNotFoundException.class, () -> service.getByUsername("Test"));
+        verify(users).findByUsername("Test");
     }
 
     @Test
-    void testGetByUsernameNotFound() {
-        when(userRepository.findByUsername("tytyruss")).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> accountService.getByUsername("tytyruss"));
+    void addFundsRejectsNegativeAmount() {
+        assertThrows(IllegalArgumentException.class, () -> service.addFunds(1L, 0.0));
+        assertThrows(IllegalArgumentException.class, () -> service.addFunds(1L, -5.0));
+        verifyNoInteractions(users);
     }
 
     @Test
-    void testAddFundsPositive() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+    void addFundsRoundsAndSaves() {
+        AppUser u = new AppUser();
+        u.setWalletBalance(10.10); // 10.10 + 0.105 = 10.205 = 10.21
+        when(users.findById(1L)).thenReturn(Optional.of(u));
+        when(users.save(any(AppUser.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        accountService.addFunds(1L, 50.0);
+        service.addFunds(1L, 0.105);
 
-        assertEquals(150.0, user.getWalletBalance());
-        verify(userRepository).save(user);
+        assertEquals(10.21, u.getWalletBalance(), 1e-9);
+        verify(users).findById(1L);
+        verify(users).save(u);
     }
 
     @Test
-    void testAddFundsZeroOrNegative() {
-        assertThrows(IllegalArgumentException.class, () -> accountService.addFunds(1L, 0));
-        assertThrows(IllegalArgumentException.class, () -> accountService.addFunds(1L, -10));
-    }
+    void debitThrowsExceptionForInsufficientFunds() {
+        AppUser u = new AppUser();
+        u.setWalletBalance(5.00);
+        when(users.findById(2L)).thenReturn(Optional.of(u));
 
-
-    @Test
-    void testDebitBalance() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
-        accountService.debit(1L, 50.0);
-
-        assertEquals(50.0, user.getWalletBalance());
-        verify(userRepository).save(user);
+        assertThrows(InsufficientFundsException.class, () -> service.debit(2L, 10.0));
+        verify(users).findById(2L);
+        verify(users, never()).save(any());
     }
 
     @Test
-    void testDebitExactBalance() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+    void debitSubtractsFundsAndSaves() {
+        AppUser u = new AppUser();
+        u.setWalletBalance(20.00);
+        when(users.findById(3L)).thenReturn(Optional.of(u));
+        when(users.save(any(AppUser.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        accountService.debit(1L, 100.0);
+        service.debit(3L, 7.337); // 20 - 7.337 = 12.663 -> round2 = 12.66
 
-        assertEquals(0.0, user.getWalletBalance());
-        verify(userRepository).save(user);
-    }
-
-    @Test
-    void testDebitInsufficientFunds() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
-        assertThrows(InsufficientFundsException.class, () -> accountService.debit(1L, 150.0));
-        verify(userRepository, never()).save(any());
+        assertEquals(12.66, u.getWalletBalance(), 1e-9);
+        verify(users).findById(3L);
+        verify(users).save(u);
     }
 }
