@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > Cart</title>
+  <title>Coverage Report > CryptoConfig</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,25 +19,18 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">org.cpts422.carrentalapp.web.cart</a>
+    <a href="../index.html">org.cpts422.carrentalapp.config</a>
 </div>
 
-<h1>Coverage Summary for Class: Cart (org.cpts422.carrentalapp.web.cart)</h1>
+<h1>Coverage Summary for Class: CryptoConfig (org.cpts422.carrentalapp.config)</h1>
 
 <table class="coverageStats">
+
 <tr>
   <th class="name">Class</th>
 <th class="coverageStat 
 ">
-  Class, %
-</th>
-<th class="coverageStat 
-">
   Method, %
-</th>
-<th class="coverageStat 
-">
-  Branch, %
 </th>
 <th class="coverageStat 
 ">
@@ -45,41 +38,52 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">Cart</td>
+  <td class="name">CryptoConfig</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (2/2)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/9)
-  </span>
-</td>
-<td class="coverageStat">
-  <span class="percent">
-    0%
-  </span>
-  <span class="absValue">
-    (0/14)
-  </span>
-</td>
-<td class="coverageStat">
-  <span class="percent">
-    0%
-  </span>
-  <span class="absValue">
-    (0/12)
+    (2/2)
   </span>
 </td>
 </tr>
-
+  <tr>
+    <td class="name">CryptoConfig$$SpringCGLIB$$0</td>
+  </tr>
+  <tr>
+    <td class="name">CryptoConfig$$SpringCGLIB$$FastClass$$0</td>
+  </tr>
+  <tr>
+    <td class="name">CryptoConfig$$SpringCGLIB$$FastClass$$1</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+</tr>
 </table>
 
 <br/>
@@ -87,48 +91,32 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;// Created by : Yevin
-&nbsp;// Created on : Sep 28
+<code class="sourceCode" id="sourceCode">&nbsp;/*
+&nbsp;BCrypt encoder for spring-security-crypto
+&nbsp;*/
+&nbsp;
+&nbsp;// Created by : Yevin
+&nbsp;// Created on : Sep 22
 &nbsp;
 &nbsp;// Last Updated by : Yevin
-&nbsp;// Last Updated on : Sep 28
+&nbsp;// Last Updated on : Sep 22
 &nbsp;
-&nbsp;package org.cpts422.carrentalapp.web.cart;
+&nbsp;package org.cpts422.carrentalapp.config;
 &nbsp;
-&nbsp;import org.springframework.context.annotation.Scope;
-&nbsp;import org.springframework.context.annotation.ScopedProxyMode;
-&nbsp;import org.springframework.stereotype.Component;
-&nbsp;import org.springframework.web.context.WebApplicationContext;
+&nbsp;import org.springframework.context.annotation.Bean;
+&nbsp;import org.springframework.context.annotation.Configuration;
+&nbsp;import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+&nbsp;import org.springframework.security.crypto.password.PasswordEncoder;
 &nbsp;
-&nbsp;import java.util.*;
-&nbsp;
-&nbsp;@Component
-&nbsp;@Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
-<b class="nc">&nbsp;public class Cart</b>
+&nbsp;@Configuration
+<b class="fc">&nbsp;public class CryptoConfig</b>
 &nbsp;{
-<b class="nc">&nbsp;    private final List&lt;CartItem&gt; items = new ArrayList&lt;&gt;();</b>
-&nbsp;
-<b class="nc">&nbsp;    public List&lt;CartItem&gt; getItems() { return items; }</b>
-&nbsp;
-&nbsp;    public void addItem(CartItem it)
+&nbsp;    @Bean
+&nbsp;    public PasswordEncoder passwordEncoder()
 &nbsp;    {
-<b class="nc">&nbsp;        if (it.getType() == CartItemType.PENALTY)</b>
-&nbsp;        {
-<b class="nc">&nbsp;            items.removeIf(x -&gt; x.getType()==CartItemType.PENALTY &amp;&amp; Objects.equals(x.getRentalId(), it.getRentalId()));</b>
-&nbsp;        }
-&nbsp;
-<b class="nc">&nbsp;        items.add(it);</b>
+<b class="fc">&nbsp;        return new BCryptPasswordEncoder();</b>
 &nbsp;    }
-&nbsp;
-<b class="nc">&nbsp;    public void removeIndex(int idx) { if (idx&gt;=0 &amp;&amp; idx&lt;items.size()) items.remove(idx); }</b>
-<b class="nc">&nbsp;    public void clearType(CartItemType t) { items.removeIf(i -&gt; i.getType()==t); }</b>
-&nbsp;
-<b class="nc">&nbsp;    public double total() { return Math.round(items.stream().mapToDouble(CartItem::getAmount).sum() * 100.0) / 100.0; }</b>
-<b class="nc">&nbsp;    public boolean hasRentItems() { return items.stream().anyMatch(i -&gt; i.getType()==CartItemType.RENT); }</b>
-<b class="nc">&nbsp;    public boolean hasPenaltyItems() { return items.stream().anyMatch(i -&gt; i.getType()==CartItemType.PENALTY); }</b>
-<b class="nc">&nbsp;    public int count() { return items.size(); }</b>
 &nbsp;}
-&nbsp;
 </code>
 </pre>
 </div>
@@ -152,7 +140,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-10-29 11:35</div>
+    <div style="float:right;">generated on 2025-10-29 12:02</div>
 </div>
 </body>
 </html>

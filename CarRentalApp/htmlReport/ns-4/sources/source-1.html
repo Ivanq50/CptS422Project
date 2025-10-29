@@ -1,0 +1,177 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AccountService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.cpts422.carrentalapp.service</a>
+</div>
+
+<h1>Coverage Summary for Class: AccountService (org.cpts422.carrentalapp.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AccountService</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (1/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.1%
+  </span>
+  <span class="absValue">
+    (1/14)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AccountService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (1/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.1%
+  </span>
+  <span class="absValue">
+    (1/14)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cpts422.carrentalapp.service;
+&nbsp;
+&nbsp;import org.cpts422.carrentalapp.model.AppUser;
+&nbsp;import org.cpts422.carrentalapp.repo.AppUserRepository;
+&nbsp;import org.cpts422.carrentalapp.service.error.UserNotFoundException;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class AccountService {
+&nbsp;    private final AppUserRepository users;
+&nbsp;
+<b class="fc">&nbsp;    public AccountService(AppUserRepository users) { this.users = users; }</b>
+&nbsp;
+&nbsp;    public AppUser getById(Long id) {
+<b class="nc">&nbsp;        return users.findById(id).orElseThrow(() -&gt; new UserNotFoundException(id));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public AppUser getByUsername(String username) {
+<b class="nc">&nbsp;        return users.findByUsername(username).orElseThrow(() -&gt; new UserNotFoundException(username));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public void addFunds(Long userId, double amount) {
+<b class="nc">&nbsp;        if (amount &lt;= 0) throw new IllegalArgumentException(&quot;Enter a positive amount.&quot;);</b>
+<b class="nc">&nbsp;        AppUser u = getById(userId);</b>
+<b class="nc">&nbsp;        u.setWalletBalance(round2(u.getWalletBalance() + amount));</b>
+<b class="nc">&nbsp;        users.save(u);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public void debit(Long userId, double amount) {
+<b class="nc">&nbsp;        AppUser u = getById(userId);</b>
+<b class="nc">&nbsp;        double next = round2(u.getWalletBalance() - amount);</b>
+<b class="nc">&nbsp;        if (next &lt; -1e-9) { // disallow negatives</b>
+<b class="nc">&nbsp;            throw new org.cpts422.carrentalapp.service.error.InsufficientFundsException(amount, u.getWalletBalance());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        u.setWalletBalance(next);</b>
+<b class="nc">&nbsp;        users.save(u);</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    private double round2(double x) { return Math.round(x * 100.0) / 100.0; }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-10-29 12:02</div>
+</div>
+</body>
+</html>

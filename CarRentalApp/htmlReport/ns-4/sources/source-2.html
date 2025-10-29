@@ -1,0 +1,196 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AuthenticationService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.cpts422.carrentalapp.service</a>
+</div>
+
+<h1>Coverage Summary for Class: AuthenticationService (org.cpts422.carrentalapp.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AuthenticationService</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    11.5%
+  </span>
+  <span class="absValue">
+    (3/26)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AuthenticationService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    11.5%
+  </span>
+  <span class="absValue">
+    (3/26)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cpts422.carrentalapp.service;
+&nbsp;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import org.cpts422.carrentalapp.model.AppUser;
+&nbsp;import org.cpts422.carrentalapp.model.MembershipType;
+&nbsp;import org.cpts422.carrentalapp.repo.AppUserRepository;
+&nbsp;import org.cpts422.carrentalapp.service.error.DriversLicenseTakenException;
+&nbsp;import org.cpts422.carrentalapp.service.error.DuplicateUsernameException;
+&nbsp;import org.cpts422.carrentalapp.web.datatransfers.RegistrationForm;
+&nbsp;import org.springframework.security.crypto.password.PasswordEncoder;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class AuthenticationService {
+&nbsp;
+&nbsp;    private final AppUserRepository users;
+&nbsp;    private final PasswordEncoder encoder;
+&nbsp;
+<b class="fc">&nbsp;    public AuthenticationService(AppUserRepository users, PasswordEncoder encoder) {</b>
+<b class="fc">&nbsp;        this.users = users;</b>
+<b class="fc">&nbsp;        this.encoder = encoder;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public AppUser register(AppUser u, String rawPassword) {
+<b class="nc">&nbsp;        u.setPasswordHash(encoder.encode(rawPassword));</b>
+<b class="nc">&nbsp;        return users.save(u);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public AppUser authenticate(String username, String rawPassword) {
+<b class="nc">&nbsp;        AppUser user = users.findByUsername(username)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Invalid username or password&quot;));</b>
+<b class="nc">&nbsp;        if (!encoder.matches(rawPassword, user.getPasswordHash())) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Invalid username or password&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public AppUser register(RegistrationForm form) {
+<b class="nc">&nbsp;        String username = form.getUsername();</b>
+<b class="nc">&nbsp;        String dl       = form.getDriversLicenseNumber();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (users.existsByUsername(username)) {</b>
+<b class="nc">&nbsp;            throw new DuplicateUsernameException(username);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (users.existsByDriversLicenseNumber(dl)) {</b>
+<b class="nc">&nbsp;            throw new DriversLicenseTakenException(dl);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        AppUser u = new AppUser();</b>
+<b class="nc">&nbsp;        u.setUsername(username);</b>
+<b class="nc">&nbsp;        u.setAge(form.getAge());</b>
+<b class="nc">&nbsp;        u.setDriversLicenseNumber(dl);</b>
+<b class="nc">&nbsp;        u.setDriversLicenseExpiry(form.getDriversLicenseExpiry());</b>
+<b class="nc">&nbsp;        u.setMembershipType(form.getMembershipType() == null</b>
+<b class="nc">&nbsp;                ? MembershipType.STANDARD</b>
+<b class="nc">&nbsp;                : form.getMembershipType());</b>
+<b class="nc">&nbsp;        u.setWalletBalance(0.0);</b>
+&nbsp;
+<b class="nc">&nbsp;        return register(u, form.getPassword());</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-10-29 12:02</div>
+</div>
+</body>
+</html>

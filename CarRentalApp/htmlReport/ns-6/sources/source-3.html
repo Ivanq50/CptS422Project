@@ -1,0 +1,257 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CartController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.cpts422.carrentalapp.web</a>
+</div>
+
+<h1>Coverage Summary for Class: CartController (org.cpts422.carrentalapp.web)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CartController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    12.5%
+  </span>
+  <span class="absValue">
+    (1/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.6%
+  </span>
+  <span class="absValue">
+    (3/54)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cpts422.carrentalapp.web;
+&nbsp;
+&nbsp;import jakarta.servlet.http.HttpSession;
+&nbsp;import org.cpts422.carrentalapp.model.AppUser;
+&nbsp;import org.cpts422.carrentalapp.model.Rental;
+&nbsp;import org.cpts422.carrentalapp.model.Vehicle;
+&nbsp;import org.cpts422.carrentalapp.service.*;
+&nbsp;import org.cpts422.carrentalapp.service.error.InsufficientFundsException;
+&nbsp;import org.cpts422.carrentalapp.web.cart.Cart;
+&nbsp;import org.springframework.stereotype.Controller;
+&nbsp;import org.springframework.ui.Model;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+&nbsp;
+&nbsp;@Controller
+&nbsp;@RequestMapping(&quot;/cart&quot;)
+&nbsp;public class CartController {
+&nbsp;
+&nbsp;    private final Cart cart;
+&nbsp;    private final CartService carts;
+&nbsp;    private final AccountService accounts;
+&nbsp;    private final VehicleService vehicles;
+&nbsp;    private final RentalService rentals;
+&nbsp;    private final PricingService pricing;
+&nbsp;
+&nbsp;    public CartController(Cart cart, CartService carts, AccountService accounts,
+<b class="fc">&nbsp;                          VehicleService vehicles, RentalService rentals, PricingService pricing) {</b>
+<b class="fc">&nbsp;        this.cart = cart; this.carts = carts; this.accounts = accounts;</b>
+<b class="fc">&nbsp;        this.vehicles = vehicles; this.rentals = rentals; this.pricing = pricing;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping
+&nbsp;    public String show(Model model) {
+<b class="nc">&nbsp;        model.addAttribute(&quot;cart&quot;, cart);</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;total&quot;, carts.total(cart));</b>
+<b class="nc">&nbsp;        return &quot;cart&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/add-rent&quot;)
+&nbsp;    public String addRent(HttpSession session,
+&nbsp;                          @RequestParam Long vehicleId,
+&nbsp;                          @RequestParam int days,
+&nbsp;                          RedirectAttributes ra) {
+<b class="nc">&nbsp;        Long uid = (Long) session.getAttribute(&quot;userId&quot;);</b>
+<b class="nc">&nbsp;        if (uid == null) return &quot;redirect:/login&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        AppUser user = accounts.getById(uid);</b>
+<b class="nc">&nbsp;        Vehicle v = vehicles.get(vehicleId);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (days &lt;= 0) {</b>
+<b class="nc">&nbsp;            ra.addFlashAttribute(&quot;error&quot;, &quot;Days must be &gt;= 1&quot;);</b>
+<b class="nc">&nbsp;            return &quot;redirect:/vehicles&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        carts.addRentLine(cart, user, v, days);</b>
+<b class="nc">&nbsp;        ra.addFlashAttribute(&quot;msg&quot;, &quot;Added to cart.&quot;);</b>
+<b class="nc">&nbsp;        return &quot;redirect:/cart&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/checkout-rent&quot;)
+&nbsp;    public String checkoutRent(HttpSession session, RedirectAttributes ra) {
+<b class="nc">&nbsp;        Long uid = (Long) session.getAttribute(&quot;userId&quot;);</b>
+<b class="nc">&nbsp;        if (uid == null) return &quot;redirect:/login&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        double amount = carts.total(cart);</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            accounts.debit(uid, amount);</b>
+&nbsp;        } catch (org.cpts422.carrentalapp.service.error.InsufficientFundsException ex) {
+<b class="nc">&nbsp;            ra.addFlashAttribute(&quot;error&quot;, ex.getMessage());</b>
+<b class="nc">&nbsp;            return &quot;redirect:/cart&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        cart.getItems().stream()</b>
+<b class="nc">&nbsp;                .filter(i -&gt; i.getType().name().equals(&quot;RENT&quot;))</b>
+<b class="nc">&nbsp;                .forEach(it -&gt; rentals.createRental(uid, it.getVehicleId(), it.getDays()));</b>
+&nbsp;
+<b class="nc">&nbsp;        cart.clearType(org.cpts422.carrentalapp.web.cart.CartItemType.RENT);</b>
+<b class="nc">&nbsp;        ra.addFlashAttribute(&quot;msg&quot;, &quot;Rental(s) confirmed.&quot;);</b>
+<b class="nc">&nbsp;        return &quot;redirect:/my-rentals&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @GetMapping(&quot;/add-penalty&quot;)
+&nbsp;    public String addPenaltyGet(@RequestParam Long rentalId,
+&nbsp;                                RedirectAttributes ra,
+&nbsp;                                HttpSession session) {
+<b class="nc">&nbsp;        return addPenalty(rentalId, ra, session);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/add-penalty&quot;)
+&nbsp;    public String addPenalty(@RequestParam Long rentalId,
+&nbsp;                             RedirectAttributes ra,
+&nbsp;                             HttpSession session) {
+<b class="nc">&nbsp;        Long uid = (Long) session.getAttribute(&quot;userId&quot;);</b>
+<b class="nc">&nbsp;        if (uid == null) return &quot;redirect:/login&quot;;</b>
+<b class="nc">&nbsp;        AppUser user = accounts.getById(uid);</b>
+&nbsp;
+<b class="nc">&nbsp;        Rental r = rentals.getById(rentalId);</b>
+<b class="nc">&nbsp;        double penalty = pricing.computeLatePenalty(r, user, pricing.now());</b>
+&nbsp;
+<b class="nc">&nbsp;        if (penalty &lt;= 0.0) {</b>
+<b class="nc">&nbsp;            rentals.markReturned(r, pricing.now());</b>
+<b class="nc">&nbsp;            ra.addFlashAttribute(&quot;msg&quot;, &quot;Vehicle returned. No penalty due.&quot;);</b>
+<b class="nc">&nbsp;            return &quot;redirect:/my-rentals&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        carts.addPenaltyLine(cart, r, penalty);</b>
+<b class="nc">&nbsp;        ra.addFlashAttribute(&quot;msg&quot;, &quot;Late return penalty added to cart.&quot;);</b>
+<b class="nc">&nbsp;        return &quot;redirect:/cart&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/checkout-penalty-and-return&quot;)
+&nbsp;    public String checkoutPenaltyAndReturn(@RequestParam Long rentalId,
+&nbsp;                                           RedirectAttributes ra,
+&nbsp;                                           HttpSession session) {
+<b class="nc">&nbsp;        Long uid = (Long) session.getAttribute(&quot;userId&quot;);</b>
+<b class="nc">&nbsp;        if (uid == null) return &quot;redirect:/login&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        double amount = carts.total(cart);</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            accounts.debit(uid, amount);</b>
+&nbsp;        } catch (InsufficientFundsException ex) {
+<b class="nc">&nbsp;            ra.addFlashAttribute(&quot;error&quot;, ex.getMessage());</b>
+<b class="nc">&nbsp;            return &quot;redirect:/cart&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        cart.clearType(org.cpts422.carrentalapp.web.cart.CartItemType.PENALTY);</b>
+&nbsp;
+<b class="nc">&nbsp;        Rental r = rentals.getById(rentalId);</b>
+<b class="nc">&nbsp;        rentals.markReturned(r, pricing.now());</b>
+&nbsp;
+<b class="nc">&nbsp;        ra.addFlashAttribute(&quot;msg&quot;, &quot;Penalty paid and vehicle returned.&quot;);</b>
+<b class="nc">&nbsp;        return &quot;redirect:/my-rentals&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/remove/{idx}&quot;)
+&nbsp;    public String remove(@PathVariable int idx) {
+<b class="nc">&nbsp;        cart.removeIndex(idx);</b>
+<b class="nc">&nbsp;        return &quot;redirect:/cart&quot;;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-10-29 12:02</div>
+</div>
+</body>
+</html>
