@@ -59,10 +59,9 @@ public class CartControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        cart = new Cart(); // real cart object
+        cart = new Cart();
         session = new MockHttpSession();
 
-        // inject the cart object
         controller = new CartController(cart, cartService, accountService, vehicleService, rentalService, pricingService);
     }
 
@@ -236,8 +235,17 @@ public class CartControllerTest {
         assertEquals("redirect:/my-rentals", view);
     }
 
+    @Test
+    void addPenaltyGetDelegatesToAddPenalty() {
+        CartController spyController = spy(controller);
+        doReturn("redirect:/somewhere")
+                .when(spyController)
+                .addPenalty(anyLong(), any(), any());
 
+        String result = spyController.addPenaltyGet(1L, ra, session);
 
-
+        verify(spyController).addPenalty(1L, ra, session);
+        assertEquals("redirect:/somewhere", result);
+    }
 
 }
