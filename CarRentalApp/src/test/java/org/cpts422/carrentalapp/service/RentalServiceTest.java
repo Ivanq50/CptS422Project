@@ -92,6 +92,8 @@ class RentalServiceTest {
         Long vehicleId = 101L;
         int days = 3;
 
+        when(appUserRepository.findById(userId)).thenReturn(Optional.empty());
+
         assertThrows(UserNotFoundException.class, () -> rentalService.createRental(userId, vehicleId, days));
 
         verify(appUserRepository).findById(userId);
