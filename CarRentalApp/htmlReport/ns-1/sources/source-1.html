@@ -48,34 +48,34 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">AccountService</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/6)
+    (6/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/4)
+    (4/4)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/14)
+    (14/14)
   </span>
 </td>
 </tr>
@@ -99,36 +99,36 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;public class AccountService {
 &nbsp;    private final AppUserRepository users;
 &nbsp;
-<b class="nc">&nbsp;    public AccountService(AppUserRepository users) { this.users = users; }</b>
+<b class="fc">&nbsp;    public AccountService(AppUserRepository users) { this.users = users; }</b>
 &nbsp;
 &nbsp;    public AppUser getById(Long id) {
-<b class="nc">&nbsp;        return users.findById(id).orElseThrow(() -&gt; new UserNotFoundException(id));</b>
+<b class="fc">&nbsp;        return users.findById(id).orElseThrow(() -&gt; new UserNotFoundException(id));</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public AppUser getByUsername(String username) {
-<b class="nc">&nbsp;        return users.findByUsername(username).orElseThrow(() -&gt; new UserNotFoundException(username));</b>
+<b class="fc">&nbsp;        return users.findByUsername(username).orElseThrow(() -&gt; new UserNotFoundException(username));</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Transactional
 &nbsp;    public void addFunds(Long userId, double amount) {
-<b class="nc">&nbsp;        if (amount &lt;= 0) throw new IllegalArgumentException(&quot;Enter a positive amount.&quot;);</b>
-<b class="nc">&nbsp;        AppUser u = getById(userId);</b>
-<b class="nc">&nbsp;        u.setWalletBalance(round2(u.getWalletBalance() + amount));</b>
-<b class="nc">&nbsp;        users.save(u);</b>
+<b class="fc">&nbsp;        if (amount &lt;= 0) throw new IllegalArgumentException(&quot;Enter a positive amount.&quot;);</b>
+<b class="fc">&nbsp;        AppUser u = getById(userId);</b>
+<b class="fc">&nbsp;        u.setWalletBalance(round2(u.getWalletBalance() + amount));</b>
+<b class="fc">&nbsp;        users.save(u);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Transactional
 &nbsp;    public void debit(Long userId, double amount) {
-<b class="nc">&nbsp;        AppUser u = getById(userId);</b>
-<b class="nc">&nbsp;        double next = round2(u.getWalletBalance() - amount);</b>
-<b class="nc">&nbsp;        if (next &lt; -1e-9) { // disallow negatives</b>
-<b class="nc">&nbsp;            throw new org.cpts422.carrentalapp.service.error.InsufficientFundsException(amount, u.getWalletBalance());</b>
+<b class="fc">&nbsp;        AppUser u = getById(userId);</b>
+<b class="fc">&nbsp;        double next = round2(u.getWalletBalance() - amount);</b>
+<b class="fc">&nbsp;        if (next &lt; -1e-9) { // disallow negatives</b>
+<b class="fc">&nbsp;            throw new org.cpts422.carrentalapp.service.error.InsufficientFundsException(amount, u.getWalletBalance());</b>
 &nbsp;        }
-<b class="nc">&nbsp;        u.setWalletBalance(next);</b>
-<b class="nc">&nbsp;        users.save(u);</b>
+<b class="fc">&nbsp;        u.setWalletBalance(next);</b>
+<b class="fc">&nbsp;        users.save(u);</b>
 &nbsp;    }
 &nbsp;
-<b class="nc">&nbsp;    private double round2(double x) { return Math.round(x * 100.0) / 100.0; }</b>
+<b class="fc">&nbsp;    private double round2(double x) { return Math.round(x * 100.0) / 100.0; }</b>
 &nbsp;}
 </code>
 </pre>
@@ -153,7 +153,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-10-30 22:12</div>
+    <div style="float:right;">generated on 2025-10-31 09:32</div>
 </div>
 </body>
 </html>
