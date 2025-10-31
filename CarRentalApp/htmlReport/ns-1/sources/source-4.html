@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > GlobalExceptionHandler</title>
+  <title>Coverage Report > PricingService</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,10 +19,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">org.cpts422.carrentalapp.web</a>
+    <a href="../index.html">org.cpts422.carrentalapp.service</a>
 </div>
 
-<h1>Coverage Summary for Class: GlobalExceptionHandler (org.cpts422.carrentalapp.web)</h1>
+<h1>Coverage Summary for Class: PricingService (org.cpts422.carrentalapp.service)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -37,11 +37,15 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 <th class="coverageStat 
 ">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
   Line, %
 </th>
 </tr>
 <tr>
-  <td class="name">GlobalExceptionHandler</td>
+  <td class="name">PricingService</td>
 <td class="coverageStat">
   <span class="percent">
     0%
@@ -55,7 +59,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     0%
   </span>
   <span class="absValue">
-    (0/2)
+    (0/7)
   </span>
 </td>
 <td class="coverageStat">
@@ -63,7 +67,15 @@ Current scope:     <a href="../../index.html">all classes</a>
     0%
   </span>
   <span class="absValue">
-    (0/3)
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/23)
   </span>
 </td>
 </tr>
@@ -75,19 +87,75 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package org.cpts422.carrentalapp.web;
+<code class="sourceCode" id="sourceCode">&nbsp;// Created by : Yevin
+&nbsp;// Created on : Sep 28
 &nbsp;
-&nbsp;import org.springframework.ui.Model;
-&nbsp;import org.springframework.web.bind.annotation.ControllerAdvice;
-&nbsp;import org.springframework.web.bind.annotation.ExceptionHandler;
+&nbsp;// Last Updated by : Yevin
+&nbsp;// Last Updated on : Sep 28
 &nbsp;
-&nbsp;@ControllerAdvice
-<b class="nc">&nbsp;public class GlobalExceptionHandler {</b>
-&nbsp;    @ExceptionHandler(RuntimeException.class)
-&nbsp;    public String handleRuntime(RuntimeException ex, Model model) {
-<b class="nc">&nbsp;        model.addAttribute(&quot;error&quot;, ex.getMessage());</b>
-<b class="nc">&nbsp;        return &quot;error&quot;;</b>
+&nbsp;package org.cpts422.carrentalapp.service;
+&nbsp;
+&nbsp;import org.cpts422.carrentalapp.model.*;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.time.*;
+&nbsp;import java.time.temporal.ChronoUnit;
+&nbsp;
+&nbsp;@Service
+<b class="nc">&nbsp;public class PricingService</b>
+&nbsp;{
+&nbsp;
+&nbsp;    public double rentalTotal(AppUser user, Vehicle vehicle, int days)
+&nbsp;    {
+<b class="nc">&nbsp;        double base = vehicle.getDailyRate() * days;</b>
+&nbsp;
+&nbsp;        // 10% off for premium
+<b class="nc">&nbsp;        if (user.getMembershipType() == MembershipType.PREMIUM) base *= 0.90;</b>
+&nbsp;
+&nbsp;        // +2% young renter fee (&lt;25)
+<b class="nc">&nbsp;        if (user.getAge() &lt; 25) base *= 1.02;</b>
+&nbsp;
+<b class="nc">&nbsp;        return round2(base);</b>
 &nbsp;    }
+&nbsp;
+&nbsp;    public double penaltyForReturn(Rental rental, LocalDateTime returningNow)
+&nbsp;    {
+<b class="nc">&nbsp;        LocalDateTime rentedDT = rental.getRentedAtDateTime();</b>
+<b class="nc">&nbsp;        if (rentedDT == null)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            rentedDT = rental.getRentedAt().atStartOfDay();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        long realDays = ChronoUnit.DAYS.between(rentedDT.toLocalDate(), returningNow.toLocalDate());</b>
+&nbsp;
+<b class="nc">&nbsp;        LocalTime rentedTime = rentedDT.toLocalTime();</b>
+<b class="nc">&nbsp;        LocalTime threshold = rentedTime.plusHours(2);</b>
+<b class="nc">&nbsp;        if (returningNow.toLocalTime().isAfter(threshold))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            realDays += 1;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        long overdueDays = realDays - (rental.getDaysPaid() == null ? 0 : rental.getDaysPaid());</b>
+&nbsp;
+<b class="nc">&nbsp;        if (rental.getUser().getMembershipType() == MembershipType.PREMIUM)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            overdueDays = Math.max(0, overdueDays - 1);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (overdueDays &lt;= 0) return 0.0;</b>
+&nbsp;
+<b class="nc">&nbsp;        double perDayPenalty = rental.getVehicle().getDailyRate() * 0.50;</b>
+<b class="nc">&nbsp;        return round2(perDayPenalty * overdueDays);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double computeLatePenalty(Rental rental, AppUser user, LocalDateTime asOf) {
+<b class="nc">&nbsp;        return penaltyForReturn(rental, asOf);</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    public LocalDate today() { return LocalDate.now(); }</b>
+<b class="nc">&nbsp;    public LocalDateTime now() { return LocalDateTime.now(); }</b>
+&nbsp;
+<b class="nc">&nbsp;    private double round2(double x) { return Math.round(x * 100.0) / 100.0; }</b>
 &nbsp;}
 </code>
 </pre>
@@ -112,7 +180,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-10-29 12:01</div>
+    <div style="float:right;">generated on 2025-10-30 22:12</div>
 </div>
 </body>
 </html>

@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > RentalController</title>
+  <title>Coverage Report > VehicleService</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,10 +19,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">org.cpts422.carrentalapp.web</a>
+    <a href="../index.html">org.cpts422.carrentalapp.service</a>
 </div>
 
-<h1>Coverage Summary for Class: RentalController (org.cpts422.carrentalapp.web)</h1>
+<h1>Coverage Summary for Class: VehicleService (org.cpts422.carrentalapp.service)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -45,7 +45,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">RentalController</td>
+  <td class="name">VehicleService</td>
 <td class="coverageStat">
   <span class="percent">
     0%
@@ -59,7 +59,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     0%
   </span>
   <span class="absValue">
-    (0/2)
+    (0/3)
   </span>
 </td>
 <td class="coverageStat">
@@ -75,7 +75,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     0%
   </span>
   <span class="absValue">
-    (0/5)
+    (0/3)
   </span>
 </td>
 </tr>
@@ -87,27 +87,27 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package org.cpts422.carrentalapp.web;
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cpts422.carrentalapp.service;
 &nbsp;
-&nbsp;import jakarta.servlet.http.HttpSession;
-&nbsp;import org.cpts422.carrentalapp.service.RentalService;
-&nbsp;import org.springframework.stereotype.Controller;
-&nbsp;import org.springframework.ui.Model;
-&nbsp;import org.springframework.web.bind.annotation.GetMapping;
+&nbsp;import org.cpts422.carrentalapp.model.Vehicle;
+&nbsp;import org.cpts422.carrentalapp.repo.VehicleRepository;
+&nbsp;import org.cpts422.carrentalapp.service.error.VehicleNotFoundException;
+&nbsp;import org.springframework.stereotype.Service;
 &nbsp;
-&nbsp;@Controller
-&nbsp;public class RentalController {
+&nbsp;import java.util.List;
 &nbsp;
-&nbsp;    private final RentalService rentalService;
+&nbsp;@Service
+&nbsp;public class VehicleService {
+&nbsp;    private final VehicleRepository vehicles;
 &nbsp;
-<b class="nc">&nbsp;    public RentalController(RentalService rentalService) { this.rentalService = rentalService; }</b>
+<b class="nc">&nbsp;    public VehicleService(VehicleRepository vehicles) { this.vehicles = vehicles; }</b>
 &nbsp;
-&nbsp;    @GetMapping(&quot;/my-rentals&quot;)
-&nbsp;    public String myRentals(Model model, HttpSession session) {
-<b class="nc">&nbsp;        Long uid = (Long) session.getAttribute(&quot;userId&quot;);</b>
-<b class="nc">&nbsp;        if (uid == null) return &quot;redirect:/login&quot;;</b>
-<b class="nc">&nbsp;        model.addAttribute(&quot;rentals&quot;, rentalService.findAllForUser(uid));</b>
-<b class="nc">&nbsp;        return &quot;my_rentals&quot;;</b>
+&nbsp;    public List&lt;Vehicle&gt; list(Boolean available) {
+<b class="nc">&nbsp;        return (available == null) ? vehicles.findAll() : vehicles.findByAvailable(available);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Vehicle get(Long id) {
+<b class="nc">&nbsp;        return vehicles.findById(id).orElseThrow(() -&gt; new VehicleNotFoundException(id));</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -133,7 +133,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-10-29 12:01</div>
+    <div style="float:right;">generated on 2025-10-30 22:12</div>
 </div>
 </body>
 </html>
