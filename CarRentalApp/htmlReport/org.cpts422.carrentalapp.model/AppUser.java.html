@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AppUser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.model</a> &gt; <span class="el_source">AppUser.java</span></div><h1>AppUser.java</h1><pre class="source lang-java linenums">/*
+Gets and Sets users details in the database
+*/
+
+// Created by : Yevin
+// Created on : Sep 22
+
+// Last Updated by : Yevin
+// Last Updated on : Sep 22
+
+package org.cpts422.carrentalapp.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import java.time.LocalDate;
+
+@Entity
+@Table(
+        name = &quot;app_user&quot;,
+        uniqueConstraints =
+                {
+                @UniqueConstraint(name = &quot;user_username&quot;, columnNames = {&quot;username&quot;}),
+                @UniqueConstraint(name = &quot;user_dl&quot;, columnNames = {&quot;drivers_license_number&quot;})
+        }
+)
+<span class="fc" id="L26">public class AppUser</span>
+{
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = &quot;username&quot;, nullable = false, length = 32)
+    private String username;
+
+    // Store Hashed Password
+    @Column(name = &quot;password_hash&quot;, nullable = false, length = 72)
+    private String passwordHash;
+
+<span class="fc" id="L39">    @Column(nullable = false)</span>
+    private double walletBalance = 0.0;
+
+    @Column(name = &quot;age&quot;, nullable = false)
+    private int age;
+
+    @Column(name = &quot;drivers_license_number&quot;, nullable = false)
+    private String driversLicenseNumber;
+
+    @Column(name = &quot;drivers_license_expiry&quot;, nullable = false)
+    private LocalDate driversLicenseExpiry;
+
+<span class="fc" id="L51">    @Enumerated(EnumType.STRING)</span>
+    @Column(name = &quot;membership_type&quot;, nullable = false)
+    private MembershipType membershipType = MembershipType.STANDARD;
+
+    // getters/setters
+<span class="fc" id="L56">    public Long getId() { return id; }</span>
+<span class="fc" id="L57">    public String getUsername() { return username; }</span>
+<span class="fc" id="L58">    public void setUsername(String username) { this.username = username; }</span>
+<span class="fc" id="L59">    public String getPasswordHash() { return passwordHash; }</span>
+<span class="fc" id="L60">    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }</span>
+<span class="fc" id="L61">    public int getAge() { return age; }</span>
+<span class="fc" id="L62">    public void setAge(int age) { this.age = age; }</span>
+<span class="fc" id="L63">    public String getDriversLicenseNumber() { return driversLicenseNumber; }</span>
+<span class="fc" id="L64">    public void setDriversLicenseNumber(String driversLicenseNumber) { this.driversLicenseNumber = driversLicenseNumber; }</span>
+<span class="fc" id="L65">    public LocalDate getDriversLicenseExpiry() { return driversLicenseExpiry; }</span>
+<span class="fc" id="L66">    public void setDriversLicenseExpiry(LocalDate driversLicenseExpiry) { this.driversLicenseExpiry = driversLicenseExpiry; }</span>
+<span class="fc" id="L67">    public MembershipType getMembershipType() { return membershipType; }</span>
+<span class="fc" id="L68">    public void setMembershipType(MembershipType membershipType) { this.membershipType = membershipType; }</span>
+<span class="fc" id="L69">    public double getWalletBalance() { return walletBalance; }</span>
+<span class="fc" id="L70">    public void setWalletBalance(double walletBalance) { this.walletBalance = walletBalance; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

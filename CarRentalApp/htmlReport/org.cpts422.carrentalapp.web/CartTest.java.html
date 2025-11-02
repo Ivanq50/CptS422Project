@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CartTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.web</a> &gt; <span class="el_source">CartTest.java</span></div><h1>CartTest.java</h1><pre class="source lang-java linenums">package org.cpts422.carrentalapp.web;
+
+import org.cpts422.carrentalapp.web.cart.Cart;
+import org.cpts422.carrentalapp.web.cart.CartItem;
+import org.cpts422.carrentalapp.web.cart.CartItemType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+
+<span class="fc" id="L12">public class CartTest</span>
+{
+    private Cart cart;
+    private CartItem rentItem;
+    private CartItem penaltyItem1;
+    private CartItem penaltyItem2;
+
+
+    @BeforeEach
+    void setup() {
+<span class="fc" id="L22">        cart = new Cart();</span>
+
+<span class="fc" id="L24">        rentItem = new CartItem();</span>
+<span class="fc" id="L25">        rentItem.setType(CartItemType.RENT);</span>
+<span class="fc" id="L26">        rentItem.setAmount(100.0);</span>
+
+<span class="fc" id="L28">        penaltyItem1 = new CartItem();</span>
+<span class="fc" id="L29">        penaltyItem1.setType(CartItemType.PENALTY);</span>
+<span class="fc" id="L30">        penaltyItem1.setRentalId(1L);</span>
+<span class="fc" id="L31">        penaltyItem1.setAmount(50.0);</span>
+
+<span class="fc" id="L33">        penaltyItem2 = new CartItem();</span>
+<span class="fc" id="L34">        penaltyItem2.setType(CartItemType.PENALTY);</span>
+<span class="fc" id="L35">        penaltyItem2.setRentalId(2L);</span>
+<span class="fc" id="L36">        penaltyItem2.setAmount(25.0);</span>
+<span class="fc" id="L37">    }</span>
+
+    @Test
+    void addItemRentNormal() {
+<span class="fc" id="L41">        cart.addItem(rentItem);</span>
+<span class="fc" id="L42">        assertEquals(1, cart.count());</span>
+<span class="fc" id="L43">        assertTrue(cart.hasRentItems());</span>
+<span class="fc" id="L44">        assertFalse(cart.hasPenaltyItems());</span>
+<span class="fc" id="L45">    }</span>
+
+    @Test
+    void hasRentItemsWhenNoRentItems() {
+<span class="fc" id="L49">        cart.addItem(penaltyItem1);</span>
+<span class="fc" id="L50">        assertFalse(cart.hasRentItems());</span>
+<span class="fc" id="L51">    }</span>
+
+    @Test
+    void addItemReplacePenalty() {
+<span class="fc" id="L55">        cart.addItem(penaltyItem1);</span>
+<span class="fc" id="L56">        cart.addItem(penaltyItem2);</span>
+<span class="fc" id="L57">        assertEquals(2, cart.count());</span>
+
+<span class="fc" id="L59">        CartItem duplicatePenalty = new CartItem();</span>
+<span class="fc" id="L60">        duplicatePenalty.setType(CartItemType.PENALTY);</span>
+<span class="fc" id="L61">        duplicatePenalty.setRentalId(1L);</span>
+<span class="fc" id="L62">        duplicatePenalty.setAmount(99.0);</span>
+
+<span class="fc" id="L64">        cart.addItem(duplicatePenalty);</span>
+<span class="fc" id="L65">        assertEquals(2, cart.count());</span>
+<span class="fc" id="L66">        assertTrue(cart.hasPenaltyItems());</span>
+<span class="fc" id="L67">    }</span>
+
+    @Test
+    void removeIndexRemoveValidIndex() {
+<span class="fc" id="L71">        cart.addItem(rentItem);</span>
+<span class="fc" id="L72">        cart.addItem(penaltyItem1);</span>
+
+<span class="fc" id="L74">        cart.removeIndex(0);</span>
+<span class="fc" id="L75">        assertEquals(1, cart.count());</span>
+<span class="fc" id="L76">        assertTrue(cart.hasPenaltyItems());</span>
+<span class="fc" id="L77">    }</span>
+
+    @Test
+    void removeIndexInvalid() {
+<span class="fc" id="L81">        cart.addItem(rentItem);</span>
+<span class="fc" id="L82">        cart.removeIndex(-1);</span>
+<span class="fc" id="L83">        cart.removeIndex(5);</span>
+<span class="fc" id="L84">        assertEquals(1, cart.count());</span>
+<span class="fc" id="L85">    }</span>
+
+    @Test
+    void clearTypeRemoveAll() {
+<span class="fc" id="L89">        cart.addItem(rentItem);</span>
+<span class="fc" id="L90">        cart.addItem(penaltyItem1);</span>
+<span class="fc" id="L91">        cart.addItem(penaltyItem2);</span>
+
+<span class="fc" id="L93">        cart.clearType(CartItemType.PENALTY);</span>
+<span class="fc" id="L94">        assertEquals(1, cart.count());</span>
+<span class="fc" id="L95">        assertTrue(cart.hasRentItems());</span>
+<span class="fc" id="L96">        assertFalse(cart.hasPenaltyItems());</span>
+<span class="fc" id="L97">    }</span>
+
+     @Test
+    void totalRoundToTwoDecimals() {
+<span class="fc" id="L101">        CartItem i1 = new CartItem();</span>
+<span class="fc" id="L102">        i1.setAmount(10.555);</span>
+<span class="fc" id="L103">        i1.setType(CartItemType.RENT);</span>
+<span class="fc" id="L104">        CartItem i2 = new CartItem();</span>
+<span class="fc" id="L105">        i2.setAmount(5.333);</span>
+<span class="fc" id="L106">        i2.setType(CartItemType.RENT);</span>
+
+<span class="fc" id="L108">        cart.addItem(i1);</span>
+<span class="fc" id="L109">        cart.addItem(i2);</span>
+
+<span class="fc" id="L111">        assertEquals(15.89, cart.total());</span>
+<span class="fc" id="L112">    }</span>
+
+    @Test
+    void countNumberOfItems() {
+<span class="fc" id="L116">        cart.addItem(rentItem);</span>
+<span class="fc" id="L117">        cart.addItem(penaltyItem1);</span>
+<span class="fc" id="L118">        assertEquals(2, cart.count());</span>
+<span class="fc" id="L119">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

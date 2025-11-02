@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RentalController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.web</a> &gt; <span class="el_source">RentalController.java</span></div><h1>RentalController.java</h1><pre class="source lang-java linenums">package org.cpts422.carrentalapp.web;
+
+import jakarta.servlet.http.HttpSession;
+import org.cpts422.carrentalapp.service.RentalService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class RentalController {
+
+    private final RentalService rentalService;
+
+<span class="fc" id="L14">    public RentalController(RentalService rentalService) { this.rentalService = rentalService; }</span>
+
+    @GetMapping(&quot;/my-rentals&quot;)
+    public String myRentals(Model model, HttpSession session) {
+<span class="nc" id="L18">        Long uid = (Long) session.getAttribute(&quot;userId&quot;);</span>
+<span class="nc bnc" id="L19" title="All 2 branches missed.">        if (uid == null) return &quot;redirect:/login&quot;;</span>
+<span class="nc" id="L20">        model.addAttribute(&quot;rentals&quot;, rentalService.findAllForUser(uid));</span>
+<span class="nc" id="L21">        return &quot;my_rentals&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

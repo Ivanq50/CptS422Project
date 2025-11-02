@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    20%
+    100%
   </span>
   <span class="absValue">
-    (1/5)
+    (5/5)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/6)
+    (6/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    3.6%
+    100%
   </span>
   <span class="absValue">
-    (1/28)
+    (28/28)
   </span>
 </td>
 </tr>
@@ -106,47 +106,47 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;    public CartService(PricingService pricing) { this.pricing = pricing; }</b>
 &nbsp;
 &nbsp;    public void addRentLine(Cart cart, AppUser user, Vehicle v, int days) {
-<b class="nc">&nbsp;        double base      = v.getDailyRate() * days;</b>
-<b class="nc">&nbsp;        double discount  = (user.getMembershipType() == MembershipType.PREMIUM) ? base * 0.10 : 0.0;</b>
-<b class="nc">&nbsp;        double surcharge = (user.getAge() &lt; 25) ? base * 0.02 : 0.0;</b>
+<b class="fc">&nbsp;        double base      = v.getDailyRate() * days;</b>
+<b class="fc">&nbsp;        double discount  = (user.getMembershipType() == MembershipType.PREMIUM) ? base * 0.10 : 0.0;</b>
+<b class="fc">&nbsp;        double surcharge = (user.getAge() &lt; 25) ? base * 0.02 : 0.0;</b>
 &nbsp;
-<b class="nc">&nbsp;        base      = round2(base);</b>
-<b class="nc">&nbsp;        discount  = round2(discount);</b>
-<b class="nc">&nbsp;        surcharge = round2(surcharge);</b>
+<b class="fc">&nbsp;        base      = round2(base);</b>
+<b class="fc">&nbsp;        discount  = round2(discount);</b>
+<b class="fc">&nbsp;        surcharge = round2(surcharge);</b>
 &nbsp;
-<b class="nc">&nbsp;        double finalAmount = round2(base - discount + surcharge);</b>
+<b class="fc">&nbsp;        double finalAmount = round2(base - discount + surcharge);</b>
 &nbsp;
-<b class="nc">&nbsp;        CartItem it = new CartItem();</b>
-<b class="nc">&nbsp;        it.setType(CartItemType.RENT);</b>
-<b class="nc">&nbsp;        it.setVehicleId(v.getId());</b>
-<b class="nc">&nbsp;        it.setVehicleLabel(v.getMake() + &quot; &quot; + v.getModel());</b>
-<b class="nc">&nbsp;        it.setDays(days);</b>
+<b class="fc">&nbsp;        CartItem it = new CartItem();</b>
+<b class="fc">&nbsp;        it.setType(CartItemType.RENT);</b>
+<b class="fc">&nbsp;        it.setVehicleId(v.getId());</b>
+<b class="fc">&nbsp;        it.setVehicleLabel(v.getMake() + &quot; &quot; + v.getModel());</b>
+<b class="fc">&nbsp;        it.setDays(days);</b>
 &nbsp;
 &nbsp;        // breakdown for UI
-<b class="nc">&nbsp;        it.setBaseAmount(base);</b>
-<b class="nc">&nbsp;        it.setDiscountAmount(discount);</b>
-<b class="nc">&nbsp;        it.setSurchargeAmount(surcharge);</b>
-<b class="nc">&nbsp;        it.setAmount(finalAmount);</b>
+<b class="fc">&nbsp;        it.setBaseAmount(base);</b>
+<b class="fc">&nbsp;        it.setDiscountAmount(discount);</b>
+<b class="fc">&nbsp;        it.setSurchargeAmount(surcharge);</b>
+<b class="fc">&nbsp;        it.setAmount(finalAmount);</b>
 &nbsp;
-<b class="nc">&nbsp;        cart.addItem(it);</b>
+<b class="fc">&nbsp;        cart.addItem(it);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public void addPenaltyLine(Cart cart, Rental rental, double penalty) {
-<b class="nc">&nbsp;        CartItem it = new CartItem();</b>
-<b class="nc">&nbsp;        it.setType(CartItemType.PENALTY);</b>
-<b class="nc">&nbsp;        it.setRentalId(rental.getId());</b>
-<b class="nc">&nbsp;        it.setVehicleLabel(rental.getVehicle().getMake() + &quot; &quot; + rental.getVehicle().getModel() + &quot; (late return)&quot;);</b>
-<b class="nc">&nbsp;        it.setAmount(round2(penalty));</b>
-<b class="nc">&nbsp;        cart.addItem(it);</b>
+<b class="fc">&nbsp;        CartItem it = new CartItem();</b>
+<b class="fc">&nbsp;        it.setType(CartItemType.PENALTY);</b>
+<b class="fc">&nbsp;        it.setRentalId(rental.getId());</b>
+<b class="fc">&nbsp;        it.setVehicleLabel(rental.getVehicle().getMake() + &quot; &quot; + rental.getVehicle().getModel() + &quot; (late return)&quot;);</b>
+<b class="fc">&nbsp;        it.setAmount(round2(penalty));</b>
+<b class="fc">&nbsp;        cart.addItem(it);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public double total(Cart cart) {
-<b class="nc">&nbsp;        return round2(cart.getItems().stream()</b>
-<b class="nc">&nbsp;                .mapToDouble(i -&gt; i.getAmount() == null ? 0.0 : i.getAmount())</b>
-<b class="nc">&nbsp;                .sum());</b>
+<b class="fc">&nbsp;        return round2(cart.getItems().stream()</b>
+<b class="fc">&nbsp;                .mapToDouble(i -&gt; i.getAmount() == null ? 0.0 : i.getAmount())</b>
+<b class="fc">&nbsp;                .sum());</b>
 &nbsp;    }
 &nbsp;
-<b class="nc">&nbsp;    private double round2(double x) { return Math.round(x * 100.0) / 100.0; }</b>
+<b class="fc">&nbsp;    private double round2(double x) { return Math.round(x * 100.0) / 100.0; }</b>
 &nbsp;}
 </code>
 </pre>
@@ -171,7 +171,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-10-29 19:04</div>
+    <div style="float:right;">generated on 2025-11-02 09:05</div>
 </div>
 </body>
 </html>

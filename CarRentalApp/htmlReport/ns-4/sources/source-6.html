@@ -56,26 +56,26 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    33.3%
+    100%
   </span>
   <span class="absValue">
-    (1/3)
+    (3/3)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/2)
+    (2/2)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    33.3%
+    100%
   </span>
   <span class="absValue">
-    (1/3)
+    (3/3)
   </span>
 </td>
 </tr>
@@ -103,11 +103,11 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;    public VehicleService(VehicleRepository vehicles) { this.vehicles = vehicles; }</b>
 &nbsp;
 &nbsp;    public List&lt;Vehicle&gt; list(Boolean available) {
-<b class="nc">&nbsp;        return (available == null) ? vehicles.findAll() : vehicles.findByAvailable(available);</b>
+<b class="fc">&nbsp;        return (available == null) ? vehicles.findAll() : vehicles.findByAvailable(available);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Vehicle get(Long id) {
-<b class="nc">&nbsp;        return vehicles.findById(id).orElseThrow(() -&gt; new VehicleNotFoundException(id));</b>
+<b class="fc">&nbsp;        return vehicles.findById(id).orElseThrow(() -&gt; new VehicleNotFoundException(id));</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -133,7 +133,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-10-29 19:04</div>
+    <div style="float:right;">generated on 2025-11-02 09:05</div>
 </div>
 </body>
 </html>

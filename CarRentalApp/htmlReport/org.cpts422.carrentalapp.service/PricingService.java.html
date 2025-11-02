@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PricingService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.service</a> &gt; <span class="el_source">PricingService.java</span></div><h1>PricingService.java</h1><pre class="source lang-java linenums">// Created by : Yevin
+// Created on : Sep 28
+
+// Last Updated by : Yevin
+// Last Updated on : Sep 28
+
+package org.cpts422.carrentalapp.service;
+
+import org.cpts422.carrentalapp.model.*;
+import org.springframework.stereotype.Service;
+
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+
+@Service
+<span class="fc" id="L16">public class PricingService</span>
+{
+
+    public double rentalTotal(AppUser user, Vehicle vehicle, int days)
+    {
+<span class="fc" id="L21">        double base = vehicle.getDailyRate() * days;</span>
+
+        // 10% off for premium
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (user.getMembershipType() == MembershipType.PREMIUM) base *= 0.90;</span>
+
+        // +2% young renter fee (&lt;25)
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (user.getAge() &lt; 25) base *= 1.02;</span>
+
+<span class="fc" id="L29">        return round2(base);</span>
+    }
+
+    public double penaltyForReturn(Rental rental, LocalDateTime returningNow)
+    {
+<span class="fc" id="L34">        LocalDateTime rentedDT = rental.getRentedAtDateTime();</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (rentedDT == null)</span>
+        {
+<span class="fc" id="L37">            rentedDT = rental.getRentedAt().atStartOfDay();</span>
+        }
+
+<span class="fc" id="L40">        long realDays = ChronoUnit.DAYS.between(rentedDT.toLocalDate(), returningNow.toLocalDate());</span>
+
+<span class="fc" id="L42">        LocalTime rentedTime = rentedDT.toLocalTime();</span>
+<span class="fc" id="L43">        LocalTime threshold = rentedTime.plusHours(2);</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (returningNow.toLocalTime().isAfter(threshold))</span>
+        {
+<span class="fc" id="L46">            realDays += 1;</span>
+        }
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        long overdueDays = realDays - (rental.getDaysPaid() == null ? 0 : rental.getDaysPaid());</span>
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (rental.getUser().getMembershipType() == MembershipType.PREMIUM)</span>
+        {
+<span class="fc" id="L53">            overdueDays = Math.max(0, overdueDays - 1);</span>
+        }
+
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (overdueDays &lt;= 0) return 0.0;</span>
+
+<span class="fc" id="L58">        double perDayPenalty = rental.getVehicle().getDailyRate() * 0.50;</span>
+<span class="fc" id="L59">        return round2(perDayPenalty * overdueDays);</span>
+    }
+
+    public double computeLatePenalty(Rental rental, AppUser user, LocalDateTime asOf) {
+<span class="fc" id="L63">        return penaltyForReturn(rental, asOf);</span>
+    }
+
+<span class="fc" id="L66">    public LocalDate today() { return LocalDate.now(); }</span>
+<span class="fc" id="L67">    public LocalDateTime now() { return LocalDateTime.now(); }</span>
+
+<span class="fc" id="L69">    private double round2(double x) { return Math.round(x * 100.0) / 100.0; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

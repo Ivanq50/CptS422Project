@@ -45,26 +45,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">Cart</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/9)
+    (9/9)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/14)
+    (14/14)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/12)
+    (12/12)
   </span>
 </td>
 </tr>
@@ -75,26 +75,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/9)
+    (9/9)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/14)
+    (14/14)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/12)
+    (12/12)
   </span>
 </td>
 </tr>
@@ -122,29 +122,29 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;@Component
 &nbsp;@Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
-<b class="nc">&nbsp;public class Cart</b>
+<b class="fc">&nbsp;public class Cart</b>
 &nbsp;{
-<b class="nc">&nbsp;    private final List&lt;CartItem&gt; items = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;    private final List&lt;CartItem&gt; items = new ArrayList&lt;&gt;();</b>
 &nbsp;
-<b class="nc">&nbsp;    public List&lt;CartItem&gt; getItems() { return items; }</b>
+<b class="fc">&nbsp;    public List&lt;CartItem&gt; getItems() { return items; }</b>
 &nbsp;
 &nbsp;    public void addItem(CartItem it)
 &nbsp;    {
-<b class="nc">&nbsp;        if (it.getType() == CartItemType.PENALTY)</b>
+<b class="fc">&nbsp;        if (it.getType() == CartItemType.PENALTY)</b>
 &nbsp;        {
-<b class="nc">&nbsp;            items.removeIf(x -&gt; x.getType()==CartItemType.PENALTY &amp;&amp; Objects.equals(x.getRentalId(), it.getRentalId()));</b>
+<b class="fc">&nbsp;            items.removeIf(x -&gt; x.getType()==CartItemType.PENALTY &amp;&amp; Objects.equals(x.getRentalId(), it.getRentalId()));</b>
 &nbsp;        }
 &nbsp;
-<b class="nc">&nbsp;        items.add(it);</b>
+<b class="fc">&nbsp;        items.add(it);</b>
 &nbsp;    }
 &nbsp;
-<b class="nc">&nbsp;    public void removeIndex(int idx) { if (idx&gt;=0 &amp;&amp; idx&lt;items.size()) items.remove(idx); }</b>
-<b class="nc">&nbsp;    public void clearType(CartItemType t) { items.removeIf(i -&gt; i.getType()==t); }</b>
+<b class="fc">&nbsp;    public void removeIndex(int idx) { if (idx&gt;=0 &amp;&amp; idx&lt;items.size()) items.remove(idx); }</b>
+<b class="fc">&nbsp;    public void clearType(CartItemType t) { items.removeIf(i -&gt; i.getType()==t); }</b>
 &nbsp;
-<b class="nc">&nbsp;    public double total() { return Math.round(items.stream().mapToDouble(CartItem::getAmount).sum() * 100.0) / 100.0; }</b>
-<b class="nc">&nbsp;    public boolean hasRentItems() { return items.stream().anyMatch(i -&gt; i.getType()==CartItemType.RENT); }</b>
-<b class="nc">&nbsp;    public boolean hasPenaltyItems() { return items.stream().anyMatch(i -&gt; i.getType()==CartItemType.PENALTY); }</b>
-<b class="nc">&nbsp;    public int count() { return items.size(); }</b>
+<b class="fc">&nbsp;    public double total() { return Math.round(items.stream().mapToDouble(CartItem::getAmount).sum() * 100.0) / 100.0; }</b>
+<b class="fc">&nbsp;    public boolean hasRentItems() { return items.stream().anyMatch(i -&gt; i.getType()==CartItemType.RENT); }</b>
+<b class="fc">&nbsp;    public boolean hasPenaltyItems() { return items.stream().anyMatch(i -&gt; i.getType()==CartItemType.PENALTY); }</b>
+<b class="fc">&nbsp;    public int count() { return items.size(); }</b>
 &nbsp;}
 &nbsp;
 </code>
@@ -170,7 +170,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-10-29 19:04</div>
+    <div style="float:right;">generated on 2025-11-02 09:05</div>
 </div>
 </body>
 </html>

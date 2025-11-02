@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PricingServiceTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.service</a> &gt; <span class="el_source">PricingServiceTest.java</span></div><h1>PricingServiceTest.java</h1><pre class="source lang-java linenums">package org.cpts422.carrentalapp.service;
+
+import org.cpts422.carrentalapp.model.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+
+<span class="fc" id="L13">public class PricingServiceTest {</span>
+
+    private PricingService pricing;
+
+    @BeforeEach
+    void setUp() {
+<span class="fc" id="L19">        pricing = new PricingService();</span>
+<span class="fc" id="L20">    }</span>
+
+    @Test
+    void rentalTotalPremiumUnder25() {
+<span class="fc" id="L24">        AppUser user = new AppUser();</span>
+<span class="fc" id="L25">        user.setMembershipType(MembershipType.PREMIUM);</span>
+<span class="fc" id="L26">        user.setAge(22);</span>
+
+<span class="fc" id="L28">        Vehicle vehicle = new Vehicle();</span>
+<span class="fc" id="L29">        vehicle.setDailyRate(100);</span>
+
+<span class="fc" id="L31">        double total = pricing.rentalTotal(user, vehicle, 2);</span>
+<span class="fc" id="L32">        assertEquals(183.6, total);</span>
+<span class="fc" id="L33">    }</span>
+
+    @Test
+    void rentalTotalPremium25Over() {
+<span class="fc" id="L37">        AppUser user = new AppUser();</span>
+<span class="fc" id="L38">        user.setMembershipType(MembershipType.PREMIUM);</span>
+<span class="fc" id="L39">        user.setAge(30);</span>
+
+<span class="fc" id="L41">        Vehicle vehicle = new Vehicle();</span>
+<span class="fc" id="L42">        vehicle.setDailyRate(50);</span>
+
+<span class="fc" id="L44">        double total = pricing.rentalTotal(user, vehicle, 3);</span>
+<span class="fc" id="L45">        assertEquals(135.0, total);</span>
+<span class="fc" id="L46">    }</span>
+
+    @Test
+    void rentalTotalStandardUnder25() {
+<span class="fc" id="L50">        AppUser user = new AppUser();</span>
+<span class="fc" id="L51">        user.setMembershipType(MembershipType.STANDARD);</span>
+<span class="fc" id="L52">        user.setAge(20);</span>
+
+<span class="fc" id="L54">        Vehicle vehicle = new Vehicle();</span>
+<span class="fc" id="L55">        vehicle.setDailyRate(40);</span>
+
+<span class="fc" id="L57">        double total = pricing.rentalTotal(user, vehicle, 2);</span>
+<span class="fc" id="L58">        assertEquals(81.6, total);</span>
+<span class="fc" id="L59">    }</span>
+
+    @Test
+    void rentalTotalStandard25Over() {
+<span class="fc" id="L63">        AppUser user = new AppUser();</span>
+<span class="fc" id="L64">        user.setMembershipType(MembershipType.STANDARD);</span>
+<span class="fc" id="L65">        user.setAge(30);</span>
+
+<span class="fc" id="L67">        Vehicle vehicle = new Vehicle();</span>
+<span class="fc" id="L68">        vehicle.setDailyRate(60);</span>
+
+<span class="fc" id="L70">        double total = pricing.rentalTotal(user, vehicle, 1);</span>
+<span class="fc" id="L71">        assertEquals(60.0, total);</span>
+<span class="fc" id="L72">    }</span>
+
+    @Test
+    void penaltyForReturnRentedOnTimeStandard() {
+<span class="fc" id="L76">        AppUser user = new AppUser();</span>
+<span class="fc" id="L77">        user.setMembershipType(MembershipType.STANDARD);</span>
+
+<span class="fc" id="L79">        Vehicle vehicle = new Vehicle();</span>
+<span class="fc" id="L80">        vehicle.setDailyRate(100);</span>
+
+<span class="fc" id="L82">        Rental rental = new Rental();</span>
+<span class="fc" id="L83">        rental.setRentedAt(LocalDate.now());</span>
+<span class="fc" id="L84">        rental.setDaysPaid(1);</span>
+<span class="fc" id="L85">        rental.setUser(user);</span>
+<span class="fc" id="L86">        rental.setVehicle(vehicle);</span>
+
+<span class="fc" id="L88">        LocalDateTime returningNow = LocalDateTime.now();</span>
+
+<span class="fc" id="L90">        double penalty = pricing.penaltyForReturn(rental, returningNow);</span>
+<span class="fc" id="L91">        assertEquals(0.0, penalty);</span>
+<span class="fc" id="L92">    }</span>
+
+    @Test
+    void penaltyForReturnRentedLateStandard() {
+<span class="fc" id="L96">        AppUser user = new AppUser();</span>
+<span class="fc" id="L97">        user.setMembershipType(MembershipType.STANDARD);</span>
+
+<span class="fc" id="L99">        Vehicle vehicle = new Vehicle();</span>
+<span class="fc" id="L100">        vehicle.setDailyRate(50);</span>
+
+<span class="fc" id="L102">        Rental rental = new Rental();</span>
+<span class="fc" id="L103">        rental.setRentedAtDateTime(LocalDateTime.now().minusDays(3));</span>
+<span class="fc" id="L104">        rental.setDaysPaid(1);</span>
+<span class="fc" id="L105">        rental.setUser(user);</span>
+<span class="fc" id="L106">        rental.setVehicle(vehicle);</span>
+
+<span class="fc" id="L108">        LocalDateTime returningNow = LocalDateTime.now();</span>
+
+<span class="fc" id="L110">        double penalty = pricing.penaltyForReturn(rental, returningNow);</span>
+<span class="fc" id="L111">        assertEquals(50.0, penalty);</span>
+<span class="fc" id="L112">    }</span>
+
+    @Test
+    void computeLatePenaltyForReturn() {
+<span class="fc" id="L116">        AppUser user = new AppUser();</span>
+<span class="fc" id="L117">        user.setMembershipType(MembershipType.STANDARD);</span>
+
+<span class="fc" id="L119">        Vehicle vehicle = new Vehicle();</span>
+<span class="fc" id="L120">        vehicle.setDailyRate(100);</span>
+
+<span class="fc" id="L122">        Rental rental = new Rental();</span>
+<span class="fc" id="L123">        rental.setRentedAtDateTime(LocalDateTime.now().minusDays(2));</span>
+<span class="fc" id="L124">        rental.setDaysPaid(1);</span>
+<span class="fc" id="L125">        rental.setUser(user);</span>
+<span class="fc" id="L126">        rental.setVehicle(vehicle);</span>
+
+<span class="fc" id="L128">        double penalty = pricing.computeLatePenalty(rental, user, LocalDateTime.now());</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">        assertTrue(penalty &gt;= 0.0);</span>
+<span class="fc" id="L130">    }</span>
+
+    @Test
+    void todayAndNow() {
+<span class="fc" id="L134">        assertNotNull(pricing.today());</span>
+<span class="fc" id="L135">        assertNotNull(pricing.now());</span>
+<span class="fc" id="L136">    }</span>
+
+    @Test
+    void penaltyForReturnPremiumUserGraceDayApplied() {
+<span class="fc" id="L140">        AppUser user = new AppUser();</span>
+<span class="fc" id="L141">        user.setMembershipType(MembershipType.PREMIUM);</span>
+
+<span class="fc" id="L143">        Vehicle vehicle = new Vehicle();</span>
+<span class="fc" id="L144">        vehicle.setDailyRate(100);</span>
+
+<span class="fc" id="L146">        Rental rental = new Rental();</span>
+<span class="fc" id="L147">        rental.setRentedAtDateTime(LocalDateTime.now().minusDays(4));</span>
+<span class="fc" id="L148">        rental.setDaysPaid(2);</span>
+<span class="fc" id="L149">        rental.setUser(user);</span>
+<span class="fc" id="L150">        rental.setVehicle(vehicle);</span>
+
+<span class="fc" id="L152">        LocalDateTime returningNow = LocalDateTime.now();</span>
+
+<span class="fc" id="L154">        double penalty = pricing.penaltyForReturn(rental, returningNow);</span>
+
+<span class="fc" id="L156">        assertEquals(50.0, penalty);</span>
+<span class="fc" id="L157">    }</span>
+
+    @Test
+    void penaltyForReturnDaysPaidIsNull() {
+<span class="fc" id="L161">        AppUser user = new AppUser();</span>
+<span class="fc" id="L162">        user.setMembershipType(MembershipType.STANDARD);</span>
+
+<span class="fc" id="L164">        Vehicle vehicle = new Vehicle();</span>
+<span class="fc" id="L165">        vehicle.setDailyRate(100);</span>
+
+<span class="fc" id="L167">        Rental rental = new Rental();</span>
+<span class="fc" id="L168">        rental.setRentedAtDateTime(LocalDateTime.now().minusDays(3));</span>
+<span class="fc" id="L169">        rental.setDaysPaid(null); // &lt;-- trigger the null branch</span>
+<span class="fc" id="L170">        rental.setUser(user);</span>
+<span class="fc" id="L171">        rental.setVehicle(vehicle);</span>
+
+<span class="fc" id="L173">        LocalDateTime returningNow = LocalDateTime.now();</span>
+
+<span class="fc" id="L175">        double penalty = pricing.penaltyForReturn(rental, returningNow);</span>
+<span class="fc" id="L176">        assertEquals(150.0, penalty);</span>
+<span class="fc" id="L177">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

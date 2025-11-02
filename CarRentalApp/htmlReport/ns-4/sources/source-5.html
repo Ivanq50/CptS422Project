@@ -45,26 +45,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">RentalService</td>
 <td class="coverageStat">
   <span class="percent">
-    16.7%
+    100%
   </span>
   <span class="absValue">
-    (1/6)
+    (6/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/10)
+    (10/10)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    13.9%
+    100%
   </span>
   <span class="absValue">
-    (5/36)
+    (36/36)
   </span>
 </td>
 </tr>
@@ -75,26 +75,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    16.7%
+    100%
   </span>
   <span class="absValue">
-    (1/6)
+    (6/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/10)
+    (10/10)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    13.9%
+    100%
   </span>
   <span class="absValue">
-    (5/36)
+    (36/36)
   </span>
 </td>
 </tr>
@@ -143,60 +143,60 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @Transactional
 &nbsp;    public Rental createRental(Long userId, Long vehicleId, Integer days) {
-<b class="nc">&nbsp;        int d = (days == null) ? 1 : days.intValue();</b>
-<b class="nc">&nbsp;        return createRental(userId, vehicleId, d);</b>
+<b class="fc">&nbsp;        int d = (days == null) ? 1 : days.intValue();</b>
+<b class="fc">&nbsp;        return createRental(userId, vehicleId, d);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Transactional
 &nbsp;    public Rental createRental(Long userId, Long vehicleId, int days) {
-<b class="nc">&nbsp;        if (days &lt;= 0) throw new IllegalArgumentException(&quot;Days must be &gt;= 1&quot;);</b>
+<b class="fc">&nbsp;        if (days &lt;= 0) throw new IllegalArgumentException(&quot;Days must be &gt;= 1&quot;);</b>
 &nbsp;
-<b class="nc">&nbsp;        AppUser user = appUserRepository.findById(userId)</b>
-<b class="nc">&nbsp;                .orElseThrow(() -&gt; new UserNotFoundException(userId));</b>
+<b class="fc">&nbsp;        AppUser user = appUserRepository.findById(userId)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new UserNotFoundException(userId));</b>
 &nbsp;
-<b class="nc">&nbsp;        Vehicle vehicle = vehicleRepository.findById(vehicleId)</b>
-<b class="nc">&nbsp;                .orElseThrow(() -&gt; new VehicleNotFoundException(vehicleId));</b>
+<b class="fc">&nbsp;        Vehicle vehicle = vehicleRepository.findById(vehicleId)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new VehicleNotFoundException(vehicleId));</b>
 &nbsp;
-<b class="nc">&nbsp;        if (!vehicle.isAvailable()) throw new VehicleUnavailableException(vehicleId);</b>
+<b class="fc">&nbsp;        if (!vehicle.isAvailable()) throw new VehicleUnavailableException(vehicleId);</b>
 &nbsp;
-<b class="nc">&nbsp;        LocalDate start = LocalDate.now();</b>
+<b class="fc">&nbsp;        LocalDate start = LocalDate.now();</b>
 &nbsp;
-<b class="nc">&nbsp;        Rental r = new Rental();</b>
-<b class="nc">&nbsp;        r.setUser(user);</b>
-<b class="nc">&nbsp;        r.setVehicle(vehicle);</b>
-<b class="nc">&nbsp;        r.setRentedAt(start);</b>
-<b class="nc">&nbsp;        r.setExpectedReturnAt(start.plusDays(days));</b>
-<b class="nc">&nbsp;        r.setReturnedAt(null);</b>
+<b class="fc">&nbsp;        Rental r = new Rental();</b>
+<b class="fc">&nbsp;        r.setUser(user);</b>
+<b class="fc">&nbsp;        r.setVehicle(vehicle);</b>
+<b class="fc">&nbsp;        r.setRentedAt(start);</b>
+<b class="fc">&nbsp;        r.setExpectedReturnAt(start.plusDays(days));</b>
+<b class="fc">&nbsp;        r.setReturnedAt(null);</b>
 &nbsp;
-<b class="nc">&nbsp;        double charge = pricing.rentalTotal(user, vehicle, days);</b>
-<b class="nc">&nbsp;        r.setDaysPaid(days);</b>
-<b class="nc">&nbsp;        r.setTotalCharge(charge);</b>
+<b class="fc">&nbsp;        double charge = pricing.rentalTotal(user, vehicle, days);</b>
+<b class="fc">&nbsp;        r.setDaysPaid(days);</b>
+<b class="fc">&nbsp;        r.setTotalCharge(charge);</b>
 &nbsp;
-<b class="nc">&nbsp;        vehicle.setAvailable(false);</b>
-<b class="nc">&nbsp;        vehicleRepository.save(vehicle);</b>
+<b class="fc">&nbsp;        vehicle.setAvailable(false);</b>
+<b class="fc">&nbsp;        vehicleRepository.save(vehicle);</b>
 &nbsp;
-<b class="nc">&nbsp;        return rentalRepository.save(r);</b>
+<b class="fc">&nbsp;        return rentalRepository.save(r);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;Rental&gt; findAllForUser(Long userId) {
-<b class="nc">&nbsp;        return rentalRepository.findByUserIdOrderByRentedAtDesc(userId);</b>
+<b class="fc">&nbsp;        return rentalRepository.findByUserIdOrderByRentedAtDesc(userId);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Rental getById(Long rentalId) {
-<b class="nc">&nbsp;        return rentalRepository.findById(rentalId)</b>
-<b class="nc">&nbsp;                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Invalid rental id: &quot; + rentalId));</b>
+<b class="fc">&nbsp;        return rentalRepository.findById(rentalId)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Invalid rental id: &quot; + rentalId));</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Transactional
 &nbsp;    public void markReturned(Rental rental, LocalDateTime now) {
-<b class="nc">&nbsp;        if (rental.getReturnedAt() == null) {</b>
-<b class="nc">&nbsp;            rental.setReturnedAt(now.toLocalDate());</b>
-<b class="nc">&nbsp;            rentalRepository.save(rental);</b>
+<b class="fc">&nbsp;        if (rental.getReturnedAt() == null) {</b>
+<b class="fc">&nbsp;            rental.setReturnedAt(now.toLocalDate());</b>
+<b class="fc">&nbsp;            rentalRepository.save(rental);</b>
 &nbsp;
-<b class="nc">&nbsp;            Vehicle v = rental.getVehicle();</b>
-<b class="nc">&nbsp;            if (!v.isAvailable()) {</b>
-<b class="nc">&nbsp;                v.setAvailable(true);</b>
-<b class="nc">&nbsp;                vehicleRepository.save(v);</b>
+<b class="fc">&nbsp;            Vehicle v = rental.getVehicle();</b>
+<b class="fc">&nbsp;            if (!v.isAvailable()) {</b>
+<b class="fc">&nbsp;                v.setAvailable(true);</b>
+<b class="fc">&nbsp;                vehicleRepository.save(v);</b>
 &nbsp;            }
 &nbsp;        }
 &nbsp;    }
@@ -224,7 +224,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-10-29 19:04</div>
+    <div style="float:right;">generated on 2025-11-02 09:05</div>
 </div>
 </body>
 </html>

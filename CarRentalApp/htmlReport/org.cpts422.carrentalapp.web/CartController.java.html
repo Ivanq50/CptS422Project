@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CartController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.web</a> &gt; <span class="el_source">CartController.java</span></div><h1>CartController.java</h1><pre class="source lang-java linenums">package org.cpts422.carrentalapp.web;
+
+import jakarta.servlet.http.HttpSession;
+import org.cpts422.carrentalapp.model.AppUser;
+import org.cpts422.carrentalapp.model.Rental;
+import org.cpts422.carrentalapp.model.Vehicle;
+import org.cpts422.carrentalapp.service.*;
+import org.cpts422.carrentalapp.service.error.InsufficientFundsException;
+import org.cpts422.carrentalapp.web.cart.Cart;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+@Controller
+@RequestMapping(&quot;/cart&quot;)
+public class CartController {
+
+    private final Cart cart;
+    private final CartService carts;
+    private final AccountService accounts;
+    private final VehicleService vehicles;
+    private final RentalService rentals;
+    private final PricingService pricing;
+
+    public CartController(Cart cart, CartService carts, AccountService accounts,
+<span class="fc" id="L27">                          VehicleService vehicles, RentalService rentals, PricingService pricing) {</span>
+<span class="fc" id="L28">        this.cart = cart; this.carts = carts; this.accounts = accounts;</span>
+<span class="fc" id="L29">        this.vehicles = vehicles; this.rentals = rentals; this.pricing = pricing;</span>
+<span class="fc" id="L30">    }</span>
+
+    @GetMapping
+    public String show(Model model) {
+<span class="fc" id="L34">        model.addAttribute(&quot;cart&quot;, cart);</span>
+<span class="fc" id="L35">        model.addAttribute(&quot;total&quot;, carts.total(cart));</span>
+<span class="fc" id="L36">        return &quot;cart&quot;;</span>
+    }
+
+    @PostMapping(&quot;/add-rent&quot;)
+    public String addRent(HttpSession session,
+                          @RequestParam Long vehicleId,
+                          @RequestParam int days,
+                          RedirectAttributes ra) {
+<span class="fc" id="L44">        Long uid = (Long) session.getAttribute(&quot;userId&quot;);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (uid == null) return &quot;redirect:/login&quot;;</span>
+
+<span class="fc" id="L47">        AppUser user = accounts.getById(uid);</span>
+<span class="fc" id="L48">        Vehicle v = vehicles.get(vehicleId);</span>
+
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (days &lt;= 0) {</span>
+<span class="fc" id="L51">            ra.addFlashAttribute(&quot;error&quot;, &quot;Days must be &gt;= 1&quot;);</span>
+<span class="fc" id="L52">            return &quot;redirect:/vehicles&quot;;</span>
+        }
+
+<span class="fc" id="L55">        carts.addRentLine(cart, user, v, days);</span>
+<span class="fc" id="L56">        ra.addFlashAttribute(&quot;msg&quot;, &quot;Added to cart.&quot;);</span>
+<span class="fc" id="L57">        return &quot;redirect:/cart&quot;;</span>
+    }
+
+    @PostMapping(&quot;/checkout-rent&quot;)
+    public String checkoutRent(HttpSession session, RedirectAttributes ra) {
+<span class="fc" id="L62">        Long uid = (Long) session.getAttribute(&quot;userId&quot;);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (uid == null) return &quot;redirect:/login&quot;;</span>
+
+<span class="fc" id="L65">        double amount = carts.total(cart);</span>
+        try {
+<span class="fc" id="L67">            accounts.debit(uid, amount);</span>
+<span class="fc" id="L68">        } catch (org.cpts422.carrentalapp.service.error.InsufficientFundsException ex) {</span>
+<span class="fc" id="L69">            ra.addFlashAttribute(&quot;error&quot;, ex.getMessage());</span>
+<span class="fc" id="L70">            return &quot;redirect:/cart&quot;;</span>
+<span class="fc" id="L71">        }</span>
+
+<span class="fc" id="L73">        cart.getItems().stream()</span>
+<span class="fc" id="L74">                .filter(i -&gt; i.getType().name().equals(&quot;RENT&quot;))</span>
+<span class="fc" id="L75">                .forEach(it -&gt; rentals.createRental(uid, it.getVehicleId(), it.getDays()));</span>
+
+<span class="fc" id="L77">        cart.clearType(org.cpts422.carrentalapp.web.cart.CartItemType.RENT);</span>
+<span class="fc" id="L78">        ra.addFlashAttribute(&quot;msg&quot;, &quot;Rental(s) confirmed.&quot;);</span>
+<span class="fc" id="L79">        return &quot;redirect:/my-rentals&quot;;</span>
+    }
+
+
+    @GetMapping(&quot;/add-penalty&quot;)
+    public String addPenaltyGet(@RequestParam Long rentalId,
+                                RedirectAttributes ra,
+                                HttpSession session) {
+<span class="fc" id="L87">        return addPenalty(rentalId, ra, session);</span>
+    }
+
+    @PostMapping(&quot;/add-penalty&quot;)
+    public String addPenalty(@RequestParam Long rentalId,
+                             RedirectAttributes ra,
+                             HttpSession session) {
+<span class="fc" id="L94">        Long uid = (Long) session.getAttribute(&quot;userId&quot;);</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (uid == null) return &quot;redirect:/login&quot;;</span>
+<span class="fc" id="L96">        AppUser user = accounts.getById(uid);</span>
+
+<span class="fc" id="L98">        Rental r = rentals.getById(rentalId);</span>
+<span class="fc" id="L99">        double penalty = pricing.computeLatePenalty(r, user, pricing.now());</span>
+
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (penalty &lt;= 0.0) {</span>
+<span class="fc" id="L102">            rentals.markReturned(r, pricing.now());</span>
+<span class="fc" id="L103">            ra.addFlashAttribute(&quot;msg&quot;, &quot;Vehicle returned. No penalty due.&quot;);</span>
+<span class="fc" id="L104">            return &quot;redirect:/my-rentals&quot;;</span>
+        }
+
+<span class="fc" id="L107">        carts.addPenaltyLine(cart, r, penalty);</span>
+<span class="fc" id="L108">        ra.addFlashAttribute(&quot;msg&quot;, &quot;Late return penalty added to cart.&quot;);</span>
+<span class="fc" id="L109">        return &quot;redirect:/cart&quot;;</span>
+    }
+
+    @PostMapping(&quot;/checkout-penalty-and-return&quot;)
+    public String checkoutPenaltyAndReturn(@RequestParam Long rentalId,
+                                           RedirectAttributes ra,
+                                           HttpSession session) {
+<span class="fc" id="L116">        Long uid = (Long) session.getAttribute(&quot;userId&quot;);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (uid == null) return &quot;redirect:/login&quot;;</span>
+
+<span class="fc" id="L119">        double amount = carts.total(cart);</span>
+        try {
+<span class="fc" id="L121">            accounts.debit(uid, amount);</span>
+<span class="fc" id="L122">        } catch (InsufficientFundsException ex) {</span>
+<span class="fc" id="L123">            ra.addFlashAttribute(&quot;error&quot;, ex.getMessage());</span>
+<span class="fc" id="L124">            return &quot;redirect:/cart&quot;;</span>
+<span class="fc" id="L125">        }</span>
+
+<span class="fc" id="L127">        cart.clearType(org.cpts422.carrentalapp.web.cart.CartItemType.PENALTY);</span>
+
+<span class="fc" id="L129">        Rental r = rentals.getById(rentalId);</span>
+<span class="fc" id="L130">        rentals.markReturned(r, pricing.now());</span>
+
+<span class="fc" id="L132">        ra.addFlashAttribute(&quot;msg&quot;, &quot;Penalty paid and vehicle returned.&quot;);</span>
+<span class="fc" id="L133">        return &quot;redirect:/my-rentals&quot;;</span>
+    }
+
+    @PostMapping(&quot;/remove/{idx}&quot;)
+    public String remove(@PathVariable int idx) {
+<span class="fc" id="L138">        cart.removeIndex(idx);</span>
+<span class="fc" id="L139">        return &quot;redirect:/cart&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

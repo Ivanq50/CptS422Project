@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthenticationControllerTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.web</a> &gt; <span class="el_source">AuthenticationControllerTest.java</span></div><h1>AuthenticationControllerTest.java</h1><pre class="source lang-java linenums">package org.cpts422.carrentalapp.web;
+
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import org.cpts422.carrentalapp.model.AppUser;
+import org.cpts422.carrentalapp.service.AuthenticationService;
+import org.cpts422.carrentalapp.web.datatransfers.LoginForm;
+import org.cpts422.carrentalapp.web.datatransfers.RegistrationForm;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.ui.ExtendedModelMap;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+<span class="fc" id="L24">class AuthenticationControllerTest {</span>
+
+    @Mock
+    AuthenticationService auth;
+
+    @Mock
+    BindingResult bindingResult;
+
+    @InjectMocks
+    AuthenticationController controller;
+
+    @Test
+    void loginPageAddsForm() {
+<span class="fc" id="L37">        Model model = new ExtendedModelMap();</span>
+<span class="fc" id="L38">        String view = controller.loginPage(model);</span>
+
+<span class="fc" id="L40">        assertEquals(&quot;login&quot;, view);</span>
+<span class="fc" id="L41">        assertTrue(model.containsAttribute(&quot;form&quot;));</span>
+<span class="fc" id="L42">        assertTrue(model.getAttribute(&quot;form&quot;) instanceof LoginForm);</span>
+<span class="fc" id="L43">    }</span>
+
+    @Test
+    void loginPageKeepsExistingForm() {
+<span class="fc" id="L47">        Model model = new ExtendedModelMap();</span>
+<span class="fc" id="L48">        model.addAttribute(&quot;form&quot;, new LoginForm());</span>
+
+<span class="fc" id="L50">        String view = controller.loginPage(model);</span>
+
+<span class="fc" id="L52">        assertEquals(&quot;login&quot;, view);</span>
+<span class="fc" id="L53">        assertTrue(model.containsAttribute(&quot;form&quot;));</span>
+<span class="fc" id="L54">    }</span>
+
+    @Test
+    void loginBindingErrorsReturnsLogin() {
+<span class="fc" id="L58">        LoginForm form = new LoginForm();</span>
+<span class="fc" id="L59">        form.setUsername(&quot;&quot;); // Invalid</span>
+<span class="fc" id="L60">        form.setPassword(&quot;123&quot;); // invalid too short</span>
+
+<span class="fc" id="L62">        when(bindingResult.hasErrors()).thenReturn(true);</span>
+
+<span class="fc" id="L64">        HttpSession session = new MockHttpSession();</span>
+<span class="fc" id="L65">        String view = controller.login(form, bindingResult, session);</span>
+
+<span class="fc" id="L67">        assertEquals(&quot;login&quot;, view);</span>
+<span class="fc" id="L68">        verify(bindingResult).hasErrors();</span>
+<span class="fc" id="L69">        verifyNoInteractions(auth);</span>
+<span class="fc" id="L70">    }</span>
+
+    @Test
+    void loginBadCredentialsReturnsLoginError() {
+<span class="fc" id="L74">        LoginForm form = new LoginForm();</span>
+<span class="fc" id="L75">        form.setUsername(&quot;user1&quot;);</span>
+<span class="fc" id="L76">        form.setPassword(&quot;wrong-password&quot;);</span>
+
+<span class="fc" id="L78">        when(bindingResult.hasErrors()).thenReturn(false);</span>
+<span class="fc" id="L79">        when(auth.authenticate(&quot;user1&quot;, &quot;wrong-password&quot;))</span>
+<span class="fc" id="L80">                .thenThrow(new IllegalArgumentException(&quot;Invalid username or password&quot;));</span>
+
+<span class="fc" id="L82">        HttpSession session = new MockHttpSession();</span>
+<span class="fc" id="L83">        String view = controller.login(form, bindingResult, session);</span>
+
+<span class="fc" id="L85">        assertEquals(&quot;login&quot;, view);</span>
+<span class="fc" id="L86">        verify(bindingResult).hasErrors();</span>
+<span class="fc" id="L87">        verify(auth).authenticate(&quot;user1&quot;, &quot;wrong-password&quot;);</span>
+<span class="fc" id="L88">        verify(bindingResult).rejectValue(eq(&quot;password&quot;), eq(&quot;invalid&quot;), anyString());</span>
+<span class="fc" id="L89">    }</span>
+
+    @Test
+    void loginSuccessSetsSessionAndRedirects() throws Exception {
+<span class="fc" id="L93">        LoginForm form = new LoginForm();</span>
+<span class="fc" id="L94">        form.setUsername(&quot;Test&quot;);</span>
+<span class="fc" id="L95">        form.setPassword(&quot;correct-password&quot;);</span>
+
+<span class="fc" id="L97">        when(bindingResult.hasErrors()).thenReturn(false);</span>
+
+<span class="fc" id="L99">        AppUser u = new AppUser();</span>
+<span class="fc" id="L100">        u.setUsername(&quot;Test&quot;);</span>
+
+        // Inject ID
+<span class="fc" id="L103">        java.lang.reflect.Field f = AppUser.class.getDeclaredField(&quot;id&quot;);</span>
+<span class="fc" id="L104">        f.setAccessible(true);</span>
+<span class="fc" id="L105">        f.set(u, 100L);</span>
+
+<span class="fc" id="L107">        when(auth.authenticate(&quot;Test&quot;, &quot;correct-password&quot;)).thenReturn(u);</span>
+
+<span class="fc" id="L109">        MockHttpSession session = new MockHttpSession();</span>
+<span class="fc" id="L110">        String view = controller.login(form, bindingResult, session);</span>
+
+<span class="fc" id="L112">        assertEquals(&quot;redirect:/&quot;, view);</span>
+<span class="fc" id="L113">        assertEquals(&quot;Test&quot;, session.getAttribute(&quot;username&quot;));</span>
+<span class="fc" id="L114">        assertEquals(100L, session.getAttribute(&quot;userId&quot;));</span>
+<span class="fc" id="L115">        verify(auth).authenticate(&quot;Test&quot;, &quot;correct-password&quot;);</span>
+<span class="fc" id="L116">    }</span>
+
+    @Test
+    void logoutInvalidatesSession() {
+<span class="fc" id="L120">        MockHttpSession session = new MockHttpSession();</span>
+<span class="fc" id="L121">        session.setAttribute(&quot;username&quot;, &quot;x&quot;);</span>
+<span class="fc" id="L122">        session.setAttribute(&quot;userId&quot;, 1L);</span>
+
+<span class="fc" id="L124">        String view = controller.logout(session);</span>
+
+<span class="fc" id="L126">        assertEquals(&quot;redirect:/&quot;, view);</span>
+<span class="fc" id="L127">        assertTrue(session.isInvalid());</span>
+<span class="fc" id="L128">    }</span>
+
+    @Test
+    void registerPageAddsForm() {
+<span class="fc" id="L132">        Model model = new ExtendedModelMap();</span>
+
+<span class="fc" id="L134">        String view = controller.registerPage(model);</span>
+
+<span class="fc" id="L136">        assertEquals(&quot;register&quot;, view);</span>
+<span class="fc" id="L137">        assertTrue(model.containsAttribute(&quot;form&quot;));</span>
+<span class="fc" id="L138">        assertTrue(model.getAttribute(&quot;form&quot;) instanceof RegistrationForm);</span>
+<span class="fc" id="L139">    }</span>
+
+    @Test
+    void registerPageKeepsExistingForm() {
+<span class="fc" id="L143">        Model model = new ExtendedModelMap();</span>
+<span class="fc" id="L144">        model.addAttribute(&quot;form&quot;, new RegistrationForm());</span>
+
+<span class="fc" id="L146">        String view = controller.registerPage(model);</span>
+
+<span class="fc" id="L148">        assertEquals(&quot;register&quot;, view);</span>
+<span class="fc" id="L149">        assertTrue(model.containsAttribute(&quot;form&quot;));</span>
+<span class="fc" id="L150">    }</span>
+
+    @Test
+    void registerWithErrorsReturnsRegister() {
+<span class="fc" id="L154">        RegistrationForm form = new RegistrationForm();</span>
+<span class="fc" id="L155">        when(bindingResult.hasErrors()).thenReturn(true);</span>
+
+<span class="fc" id="L157">        String view = controller.register(form, bindingResult);</span>
+
+<span class="fc" id="L159">        assertEquals(&quot;register&quot;, view);</span>
+<span class="fc" id="L160">        verify(bindingResult).hasErrors();</span>
+<span class="fc" id="L161">        verifyNoInteractions(auth);</span>
+<span class="fc" id="L162">    }</span>
+
+    @Test
+    void registerDuplicateUsernameReturnsError() {
+<span class="fc" id="L166">        RegistrationForm form = new RegistrationForm();</span>
+<span class="fc" id="L167">        when(bindingResult.hasErrors()).thenReturn(false);</span>
+<span class="fc" id="L168">        when(auth.register(form)).thenThrow(new org.cpts422.carrentalapp.service.error.DuplicateUsernameException(&quot;taken&quot;));</span>
+
+<span class="fc" id="L170">        String view = controller.register(form, bindingResult);</span>
+
+<span class="fc" id="L172">        assertEquals(&quot;register&quot;, view);</span>
+<span class="fc" id="L173">        verify(bindingResult).rejectValue(eq(&quot;username&quot;), eq(&quot;duplicate&quot;), anyString());</span>
+<span class="fc" id="L174">    }</span>
+
+    @Test
+    void registerDuplicateDriversLicenseReturnsError() {
+<span class="fc" id="L178">        RegistrationForm form = new RegistrationForm();</span>
+<span class="fc" id="L179">        when(bindingResult.hasErrors()).thenReturn(false);</span>
+<span class="fc" id="L180">        when(auth.register(form)).thenThrow(new org.cpts422.carrentalapp.service.error.DriversLicenseTakenException(&quot;License-taken&quot;));</span>
+
+<span class="fc" id="L182">        String view = controller.register(form, bindingResult);</span>
+
+<span class="fc" id="L184">        assertEquals(&quot;register&quot;, view);</span>
+<span class="fc" id="L185">        verify(bindingResult).rejectValue(eq(&quot;driversLicenseNumber&quot;), eq(&quot;duplicate&quot;), anyString());</span>
+<span class="fc" id="L186">    }</span>
+
+    @Test
+    void registerRuntimeErrorMessageReturnsRegister() {
+<span class="fc" id="L190">        RegistrationForm form = new RegistrationForm();</span>
+<span class="fc" id="L191">        when(bindingResult.hasErrors()).thenReturn(false);</span>
+<span class="fc" id="L192">        when(auth.register(form)).thenThrow(new RuntimeException(&quot;Test&quot;));</span>
+
+<span class="fc" id="L194">        String view = controller.register(form, bindingResult);</span>
+
+<span class="fc" id="L196">        assertEquals(&quot;register&quot;, view);</span>
+<span class="fc" id="L197">        verify(bindingResult).reject(eq(&quot;registration&quot;), anyString());</span>
+<span class="fc" id="L198">    }</span>
+
+    @Test
+    void registerRuntimeNullErrorDisplaysDefaultMessage() {
+<span class="fc" id="L202">        RegistrationForm form = new RegistrationForm();</span>
+<span class="fc" id="L203">        when(bindingResult.hasErrors()).thenReturn(false);</span>
+<span class="fc" id="L204">        RuntimeException ex = new RuntimeException() { @Override public String getMessage() { return null; } };</span>
+<span class="fc" id="L205">        when(auth.register(form)).thenThrow(ex);</span>
+
+<span class="fc" id="L207">        String view = controller.register(form, bindingResult);</span>
+
+<span class="fc" id="L209">        assertEquals(&quot;register&quot;, view);</span>
+<span class="fc" id="L210">        verify(bindingResult).reject(eq(&quot;registration&quot;), anyString());</span>
+<span class="fc" id="L211">    }</span>
+
+    @Test
+    void registerSuccessful() {
+<span class="fc" id="L215">        RegistrationForm form = new RegistrationForm();</span>
+<span class="fc" id="L216">        when(bindingResult.hasErrors()).thenReturn(false);</span>
+<span class="fc" id="L217">        when(auth.register(form)).thenReturn(new AppUser());</span>
+
+<span class="fc" id="L219">        String view = controller.register(form, bindingResult);</span>
+
+<span class="fc" id="L221">        assertEquals(&quot;register_successful&quot;, view);</span>
+<span class="fc" id="L222">    }</span>
+
+    @Test
+    void membershipTypesReturnsValues() {
+<span class="fc" id="L226">        assertArrayEquals(</span>
+<span class="fc" id="L227">                org.cpts422.carrentalapp.model.MembershipType.values(),</span>
+<span class="fc" id="L228">                controller.membershipTypes()</span>
+        );
+<span class="fc" id="L230">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

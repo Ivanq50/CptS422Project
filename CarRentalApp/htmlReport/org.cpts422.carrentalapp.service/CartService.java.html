@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CartService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.service</a> &gt; <span class="el_source">CartService.java</span></div><h1>CartService.java</h1><pre class="source lang-java linenums">package org.cpts422.carrentalapp.service;
+
+import org.cpts422.carrentalapp.model.AppUser;
+import org.cpts422.carrentalapp.model.MembershipType;
+import org.cpts422.carrentalapp.model.Rental;
+import org.cpts422.carrentalapp.model.Vehicle;
+import org.cpts422.carrentalapp.web.cart.Cart;
+import org.cpts422.carrentalapp.web.cart.CartItem;
+import org.cpts422.carrentalapp.web.cart.CartItemType;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CartService {
+
+    private final PricingService pricing;
+
+<span class="fc" id="L17">    public CartService(PricingService pricing) { this.pricing = pricing; }</span>
+
+    public void addRentLine(Cart cart, AppUser user, Vehicle v, int days) {
+<span class="fc" id="L20">        double base      = v.getDailyRate() * days;</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        double discount  = (user.getMembershipType() == MembershipType.PREMIUM) ? base * 0.10 : 0.0;</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        double surcharge = (user.getAge() &lt; 25) ? base * 0.02 : 0.0;</span>
+
+<span class="fc" id="L24">        base      = round2(base);</span>
+<span class="fc" id="L25">        discount  = round2(discount);</span>
+<span class="fc" id="L26">        surcharge = round2(surcharge);</span>
+
+<span class="fc" id="L28">        double finalAmount = round2(base - discount + surcharge);</span>
+
+<span class="fc" id="L30">        CartItem it = new CartItem();</span>
+<span class="fc" id="L31">        it.setType(CartItemType.RENT);</span>
+<span class="fc" id="L32">        it.setVehicleId(v.getId());</span>
+<span class="fc" id="L33">        it.setVehicleLabel(v.getMake() + &quot; &quot; + v.getModel());</span>
+<span class="fc" id="L34">        it.setDays(days);</span>
+
+        // breakdown for UI
+<span class="fc" id="L37">        it.setBaseAmount(base);</span>
+<span class="fc" id="L38">        it.setDiscountAmount(discount);</span>
+<span class="fc" id="L39">        it.setSurchargeAmount(surcharge);</span>
+<span class="fc" id="L40">        it.setAmount(finalAmount);</span>
+
+<span class="fc" id="L42">        cart.addItem(it);</span>
+<span class="fc" id="L43">    }</span>
+
+    public void addPenaltyLine(Cart cart, Rental rental, double penalty) {
+<span class="fc" id="L46">        CartItem it = new CartItem();</span>
+<span class="fc" id="L47">        it.setType(CartItemType.PENALTY);</span>
+<span class="fc" id="L48">        it.setRentalId(rental.getId());</span>
+<span class="fc" id="L49">        it.setVehicleLabel(rental.getVehicle().getMake() + &quot; &quot; + rental.getVehicle().getModel() + &quot; (late return)&quot;);</span>
+<span class="fc" id="L50">        it.setAmount(round2(penalty));</span>
+<span class="fc" id="L51">        cart.addItem(it);</span>
+<span class="fc" id="L52">    }</span>
+
+    public double total(Cart cart) {
+<span class="fc" id="L55">        return round2(cart.getItems().stream()</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">                .mapToDouble(i -&gt; i.getAmount() == null ? 0.0 : i.getAmount())</span>
+<span class="fc" id="L57">                .sum());</span>
+    }
+
+<span class="fc" id="L60">    private double round2(double x) { return Math.round(x * 100.0) / 100.0; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

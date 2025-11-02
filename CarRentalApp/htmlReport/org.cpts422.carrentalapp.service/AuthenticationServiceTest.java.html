@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthenticationServiceTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.service</a> &gt; <span class="el_source">AuthenticationServiceTest.java</span></div><h1>AuthenticationServiceTest.java</h1><pre class="source lang-java linenums">package org.cpts422.carrentalapp.service;
+
+import org.cpts422.carrentalapp.model.AppUser;
+import org.cpts422.carrentalapp.model.MembershipType;
+import org.cpts422.carrentalapp.repo.AppUserRepository;
+import org.cpts422.carrentalapp.service.error.DriversLicenseTakenException;
+import org.cpts422.carrentalapp.service.error.DuplicateUsernameException;
+import org.cpts422.carrentalapp.web.datatransfers.RegistrationForm;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+<span class="fc" id="L22">class AuthenticationServiceTest {</span>
+
+    @Mock AppUserRepository users;
+    @Mock PasswordEncoder encoder;
+
+    @InjectMocks AuthenticationService service;
+
+    @Test
+    void UsernameNotFoundThrowsException() {
+<span class="fc" id="L31">        when(users.findByUsername(&quot;Test&quot;)).thenReturn(Optional.empty());</span>
+
+<span class="fc" id="L33">        IllegalArgumentException ex = assertThrows(</span>
+                IllegalArgumentException.class,
+<span class="nc" id="L35">                () -&gt; service.authenticate(&quot;Test&quot;, &quot;pwd&quot;));</span>
+
+<span class="pc bpc" id="L37" title="2 of 4 branches missed.">        assertTrue(ex.getMessage() == null || ex.getMessage().toLowerCase().contains(&quot;username&quot;));</span>
+<span class="fc" id="L38">        verify(users).findByUsername(&quot;Test&quot;);</span>
+<span class="fc" id="L39">        verifyNoMoreInteractions(users, encoder);</span>
+<span class="fc" id="L40">    }</span>
+
+    @Test
+    void WrongPasswordThrowsException() {
+<span class="fc" id="L44">        AppUser u = new AppUser();</span>
+<span class="fc" id="L45">        u.setUsername(&quot;Test&quot;);</span>
+<span class="fc" id="L46">        u.setPasswordHash(&quot;HASH&quot;);</span>
+<span class="fc" id="L47">        when(users.findByUsername(&quot;Test&quot;)).thenReturn(Optional.of(u));</span>
+<span class="fc" id="L48">        when(encoder.matches(&quot;bad&quot;, &quot;HASH&quot;)).thenReturn(false);</span>
+
+<span class="fc" id="L50">        IllegalArgumentException ex = assertThrows(</span>
+                IllegalArgumentException.class,
+<span class="nc" id="L52">                () -&gt; service.authenticate(&quot;Test&quot;, &quot;bad&quot;));</span>
+
+<span class="pc bpc" id="L54" title="2 of 4 branches missed.">        assertTrue(ex.getMessage() == null || ex.getMessage().toLowerCase().contains(&quot;password&quot;));</span>
+<span class="fc" id="L55">        verify(users).findByUsername(&quot;Test&quot;);</span>
+<span class="fc" id="L56">        verify(encoder).matches(&quot;bad&quot;, &quot;HASH&quot;);</span>
+<span class="fc" id="L57">        verifyNoMoreInteractions(users, encoder);</span>
+<span class="fc" id="L58">    }</span>
+
+    @Test
+    void authenticateSuccessReturnsUser() {
+<span class="fc" id="L62">        AppUser u = new AppUser();</span>
+<span class="fc" id="L63">        u.setUsername(&quot;Test&quot;);</span>
+<span class="fc" id="L64">        u.setPasswordHash(&quot;HASH&quot;);</span>
+<span class="fc" id="L65">        when(users.findByUsername(&quot;Test&quot;)).thenReturn(Optional.of(u));</span>
+<span class="fc" id="L66">        when(encoder.matches(&quot;ok&quot;, &quot;HASH&quot;)).thenReturn(true);</span>
+
+<span class="fc" id="L68">        AppUser out = service.authenticate(&quot;Test&quot;, &quot;ok&quot;);</span>
+
+<span class="fc" id="L70">        assertSame(u, out);</span>
+<span class="fc" id="L71">        verify(users).findByUsername(&quot;Test&quot;);</span>
+<span class="fc" id="L72">        verify(encoder).matches(&quot;ok&quot;, &quot;HASH&quot;);</span>
+<span class="fc" id="L73">        verifyNoMoreInteractions(users, encoder);</span>
+<span class="fc" id="L74">    }</span>
+
+    @Test
+    void UserPasswordHashesAndSaves() {
+<span class="fc" id="L78">        AppUser u = new AppUser();</span>
+<span class="fc" id="L79">        when(encoder.encode(&quot;password&quot;)).thenReturn(&quot;ENC&quot;);</span>
+<span class="fc" id="L80">        when(users.save(any(AppUser.class))).thenAnswer(inv -&gt; inv.getArgument(0));</span>
+
+<span class="fc" id="L82">        AppUser saved = service.register(u, &quot;password&quot;);</span>
+
+<span class="fc" id="L84">        assertEquals(&quot;ENC&quot;, saved.getPasswordHash());</span>
+<span class="fc" id="L85">        verify(encoder).encode(&quot;password&quot;);</span>
+<span class="fc" id="L86">        verify(users).save(u);</span>
+<span class="fc" id="L87">        verifyNoMoreInteractions(users, encoder);</span>
+<span class="fc" id="L88">    }</span>
+
+    private RegistrationForm baseForm() {
+<span class="fc" id="L91">        RegistrationForm f = new RegistrationForm();</span>
+<span class="fc" id="L92">        f.setUsername(&quot;u1&quot;);</span>
+<span class="fc" id="L93">        f.setPassword(&quot;pw-12345678&quot;);</span>
+<span class="fc" id="L94">        f.setAge(30);</span>
+<span class="fc" id="L95">        f.setDriversLicenseNumber(&quot;DL123&quot;);</span>
+<span class="fc" id="L96">        f.setDriversLicenseExpiry(LocalDate.of(2030, 1, 1));</span>
+<span class="fc" id="L97">        return f;</span>
+    }
+
+    @Test
+    void registerDuplicateUsernameThrowsException() {
+<span class="fc" id="L102">        RegistrationForm f = baseForm();</span>
+<span class="fc" id="L103">        when(users.existsByUsername(&quot;u1&quot;)).thenReturn(true);</span>
+
+<span class="pc" id="L105">        assertThrows(DuplicateUsernameException.class, () -&gt; service.register(f));</span>
+
+<span class="fc" id="L107">        verify(users).existsByUsername(&quot;u1&quot;);</span>
+<span class="fc" id="L108">        verifyNoMoreInteractions(users, encoder);</span>
+<span class="fc" id="L109">    }</span>
+
+    @Test
+    void registerDuplicateDriversLicenseThrowsException() {
+<span class="fc" id="L113">        RegistrationForm f = baseForm();</span>
+<span class="fc" id="L114">        when(users.existsByUsername(&quot;u1&quot;)).thenReturn(false);</span>
+<span class="fc" id="L115">        when(users.existsByDriversLicenseNumber(&quot;DL123&quot;)).thenReturn(true);</span>
+
+<span class="pc" id="L117">        assertThrows(DriversLicenseTakenException.class, () -&gt; service.register(f));</span>
+
+<span class="fc" id="L119">        verify(users).existsByUsername(&quot;u1&quot;);</span>
+<span class="fc" id="L120">        verify(users).existsByDriversLicenseNumber(&quot;DL123&quot;);</span>
+<span class="fc" id="L121">        verifyNoMoreInteractions(users, encoder);</span>
+<span class="fc" id="L122">    }</span>
+
+    @Test
+    void registerUserWithNoMembershipDefaultsToStandard() {
+<span class="fc" id="L126">        RegistrationForm f = baseForm();</span>
+<span class="fc" id="L127">        f.setMembershipType(null);</span>
+
+<span class="fc" id="L129">        when(users.existsByUsername(&quot;u1&quot;)).thenReturn(false);</span>
+<span class="fc" id="L130">        when(users.existsByDriversLicenseNumber(&quot;DL123&quot;)).thenReturn(false);</span>
+<span class="fc" id="L131">        when(encoder.encode(&quot;pw-12345678&quot;)).thenReturn(&quot;ENC&quot;);</span>
+
+<span class="fc" id="L133">        ArgumentCaptor&lt;AppUser&gt; captor = ArgumentCaptor.forClass(AppUser.class);</span>
+<span class="fc" id="L134">        when(users.save(captor.capture())).thenAnswer(inv -&gt; inv.getArgument(0));</span>
+
+<span class="fc" id="L136">        AppUser saved = service.register(f);</span>
+
+<span class="fc" id="L138">        AppUser created = captor.getValue();</span>
+<span class="fc" id="L139">        assertEquals(&quot;u1&quot;, created.getUsername());</span>
+<span class="fc" id="L140">        assertEquals(30, created.getAge());</span>
+<span class="fc" id="L141">        assertEquals(&quot;DL123&quot;, created.getDriversLicenseNumber());</span>
+<span class="fc" id="L142">        assertEquals(LocalDate.of(2030,1,1), created.getDriversLicenseExpiry());</span>
+<span class="fc" id="L143">        assertEquals(MembershipType.STANDARD, created.getMembershipType());</span>
+<span class="fc" id="L144">        assertEquals(0.0, created.getWalletBalance(), 0.0001);</span>
+<span class="fc" id="L145">        assertEquals(&quot;ENC&quot;, saved.getPasswordHash());</span>
+
+<span class="fc" id="L147">        verify(users).existsByUsername(&quot;u1&quot;);</span>
+<span class="fc" id="L148">        verify(users).existsByDriversLicenseNumber(&quot;DL123&quot;);</span>
+<span class="fc" id="L149">        verify(encoder).encode(&quot;pw-12345678&quot;);</span>
+<span class="fc" id="L150">        verify(users).save(any(AppUser.class));</span>
+<span class="fc" id="L151">    }</span>
+
+    @Test
+    void registerUserWithMembershipRetainsMembershipType() {
+<span class="fc" id="L155">        RegistrationForm f = baseForm();</span>
+<span class="fc" id="L156">        f.setMembershipType(MembershipType.PREMIUM);</span>
+
+<span class="fc" id="L158">        when(users.existsByUsername(&quot;u1&quot;)).thenReturn(false);</span>
+<span class="fc" id="L159">        when(users.existsByDriversLicenseNumber(&quot;DL123&quot;)).thenReturn(false);</span>
+<span class="fc" id="L160">        when(encoder.encode(&quot;pw-12345678&quot;)).thenReturn(&quot;ENC&quot;);</span>
+<span class="fc" id="L161">        ArgumentCaptor&lt;AppUser&gt; captor = ArgumentCaptor.forClass(AppUser.class);</span>
+<span class="fc" id="L162">        when(users.save(captor.capture())).thenAnswer(inv -&gt; inv.getArgument(0));</span>
+
+<span class="fc" id="L164">        service.register(f);</span>
+
+<span class="fc" id="L166">        AppUser created = captor.getValue();</span>
+<span class="fc" id="L167">        assertEquals(MembershipType.PREMIUM, created.getMembershipType());</span>
+<span class="fc" id="L168">        assertEquals(0.0, created.getWalletBalance(), 0.0001);</span>
+
+<span class="fc" id="L170">        verify(users).existsByUsername(&quot;u1&quot;);</span>
+<span class="fc" id="L171">        verify(users).existsByDriversLicenseNumber(&quot;DL123&quot;);</span>
+<span class="fc" id="L172">        verify(encoder).encode(&quot;pw-12345678&quot;);</span>
+<span class="fc" id="L173">        verify(users).save(any(AppUser.class));</span>
+<span class="fc" id="L174">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

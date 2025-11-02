@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CartServiceTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.service</a> &gt; <span class="el_source">CartServiceTest.java</span></div><h1>CartServiceTest.java</h1><pre class="source lang-java linenums">package org.cpts422.carrentalapp.service;
+
+import org.cpts422.carrentalapp.model.AppUser;
+import org.cpts422.carrentalapp.model.MembershipType;
+import org.cpts422.carrentalapp.model.Vehicle;
+import org.cpts422.carrentalapp.model.Rental;
+import org.cpts422.carrentalapp.repo.AppUserRepository;
+import org.cpts422.carrentalapp.service.error.InsufficientFundsException;
+import org.cpts422.carrentalapp.service.error.UserNotFoundException;
+import org.cpts422.carrentalapp.web.cart.Cart;
+import org.cpts422.carrentalapp.web.cart.CartItem;
+import org.cpts422.carrentalapp.web.cart.CartItemType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+<span class="fc" id="L26">public class CartServiceTest {</span>
+    @Mock
+    private PricingService pricingService; // for future use
+
+    @InjectMocks
+    private CartService cartService;
+
+    private Cart cart;
+    private AppUser user;
+    private Vehicle vehicle;
+
+    @BeforeEach
+    void setUp() {
+<span class="fc" id="L39">        cart = new Cart();</span>
+
+<span class="fc" id="L41">        user = new AppUser();</span>
+<span class="fc" id="L42">        user.setAge(30);</span>
+<span class="fc" id="L43">        user.setMembershipType(MembershipType.STANDARD);</span>
+
+<span class="fc" id="L45">        vehicle = new Vehicle();</span>
+<span class="fc" id="L46">        vehicle.setId(1L);</span>
+<span class="fc" id="L47">        vehicle.setMake(&quot;Toyota&quot;);</span>
+<span class="fc" id="L48">        vehicle.setModel(&quot;Camry&quot;);</span>
+<span class="fc" id="L49">        vehicle.setDailyRate(50.0);</span>
+<span class="fc" id="L50">    }</span>
+
+    @Test
+    void testAddRentLineStandardUserAdult() {
+<span class="fc" id="L54">        cartService.addRentLine(cart, user, vehicle, 3);</span>
+
+<span class="fc" id="L56">        assertEquals(1, cart.getItems().size());</span>
+
+<span class="fc" id="L58">        CartItem it = cart.getItems().get(0);</span>
+<span class="fc" id="L59">        assertEquals(CartItemType.RENT, it.getType());</span>
+<span class="fc" id="L60">        assertEquals(vehicle.getId(), it.getVehicleId());</span>
+<span class="fc" id="L61">        assertEquals(&quot;Toyota Camry&quot;, it.getVehicleLabel());</span>
+<span class="fc" id="L62">        assertEquals(3, it.getDays());</span>
+<span class="fc" id="L63">        assertEquals(150.0, it.getBaseAmount());</span>
+<span class="fc" id="L64">        assertEquals(0.0, it.getDiscountAmount());</span>
+<span class="fc" id="L65">        assertEquals(0.0, it.getSurchargeAmount());</span>
+<span class="fc" id="L66">        assertEquals(150.0, it.getAmount());</span>
+<span class="fc" id="L67">    }</span>
+
+    @Test
+    void testAddRentLinePremiumUserUnder25() {
+<span class="fc" id="L71">        user.setMembershipType(MembershipType.PREMIUM);</span>
+<span class="fc" id="L72">        user.setAge(22);</span>
+
+<span class="fc" id="L74">        cartService.addRentLine(cart, user, vehicle, 4);</span>
+
+<span class="fc" id="L76">        CartItem it = cart.getItems().get(0);</span>
+<span class="fc" id="L77">        assertEquals(200.0, it.getBaseAmount());</span>
+<span class="fc" id="L78">        assertEquals(20.0, it.getDiscountAmount());</span>
+<span class="fc" id="L79">        assertEquals(4.0, it.getSurchargeAmount());</span>
+<span class="fc" id="L80">        assertEquals(184.0, it.getAmount());</span>
+<span class="fc" id="L81">    }</span>
+
+    @Test
+    void testAddPenaltyLine() {
+<span class="fc" id="L85">        Rental rental = new Rental();</span>
+<span class="fc" id="L86">        rental.setId(1L);</span>
+<span class="fc" id="L87">        rental.setVehicle(vehicle);</span>
+
+<span class="fc" id="L89">        cartService.addPenaltyLine(cart, rental, 25.0);</span>
+
+<span class="fc" id="L91">        CartItem it = cart.getItems().get(0);</span>
+<span class="fc" id="L92">        assertEquals(CartItemType.PENALTY, it.getType());</span>
+<span class="fc" id="L93">        assertEquals(rental.getId(), it.getRentalId());</span>
+<span class="fc" id="L94">        assertEquals(&quot;Toyota Camry (late return)&quot;, it.getVehicleLabel());</span>
+<span class="fc" id="L95">        assertEquals(25.0, it.getAmount());</span>
+<span class="fc" id="L96">    }</span>
+
+     @Test
+    void testTotalEmptyCart() {
+<span class="fc" id="L100">        assertEquals(0.0, cartService.total(cart));</span>
+<span class="fc" id="L101">    }</span>
+
+    @Test
+    void testTotalWithItems() {
+<span class="fc" id="L105">        CartItem item1 = new CartItem();</span>
+<span class="fc" id="L106">        item1.setAmount(50.0);</span>
+<span class="fc" id="L107">        cart.addItem(item1);</span>
+
+<span class="fc" id="L109">        CartItem item2 = new CartItem();</span>
+<span class="fc" id="L110">        item2.setAmount(25.0);</span>
+<span class="fc" id="L111">        cart.addItem(item2);</span>
+
+<span class="fc" id="L113">        CartItem item3 = new CartItem();</span>
+<span class="fc" id="L114">        item3.setAmount(null); // should count as 0</span>
+<span class="fc" id="L115">        cart.addItem(item3);</span>
+
+<span class="fc" id="L117">        assertEquals(75.0, cartService.total(cart));</span>
+<span class="fc" id="L118">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

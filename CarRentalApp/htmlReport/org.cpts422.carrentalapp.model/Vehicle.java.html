@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Vehicle.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.model</a> &gt; <span class="el_source">Vehicle.java</span></div><h1>Vehicle.java</h1><pre class="source lang-java linenums">package org.cpts422.carrentalapp.model;
+
+import jakarta.persistence.*;
+
+@Entity
+public class Vehicle {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private VehicleType vehicleType;
+
+    @Column(nullable = false)
+    private String make;
+
+    @Column(nullable = false)
+    private String model;
+
+    @Column(nullable = false)
+    private double dailyRate;
+
+<span class="fc" id="L24">    @Column(nullable = false)</span>
+    private boolean available = true;
+
+<span class="fc" id="L27">    public Vehicle() {}</span>
+
+<span class="fc" id="L29">    public Vehicle(String make, String model, VehicleType vehicleType, double dailyRate, boolean available) {</span>
+<span class="fc" id="L30">        this.make = make;</span>
+<span class="fc" id="L31">        this.model = model;</span>
+<span class="fc" id="L32">        this.vehicleType = vehicleType;</span>
+<span class="fc" id="L33">        this.dailyRate = dailyRate;</span>
+<span class="fc" id="L34">        this.available = available;</span>
+<span class="fc" id="L35">    }</span>
+
+    // Getter and setter methods
+    public boolean isAvailable() {
+<span class="fc" id="L39">        return Boolean.TRUE.equals(this.available);</span>
+    }
+    public boolean getAvailable() {
+<span class="nc" id="L42">        return isAvailable();</span>
+    }
+
+<span class="fc" id="L45">    public Long getId() { return id;}</span>
+<span class="fc" id="L46">    public void setId(Long id) { this.id = id; }</span>
+<span class="nc" id="L47">    public VehicleType getVehicleType() { return vehicleType; }</span>
+<span class="nc" id="L48">    public void setVehicleType(VehicleType vehicleType) { this.vehicleType = vehicleType; }</span>
+<span class="fc" id="L49">    public String getMake() { return make; }</span>
+<span class="fc" id="L50">    public void setMake(String make) { this.make = make; }</span>
+<span class="fc" id="L51">    public String getModel() { return model; }</span>
+<span class="fc" id="L52">    public void setModel(String model) { this.model = model; }</span>
+<span class="fc" id="L53">    public double getDailyRate() { return dailyRate; }</span>
+<span class="fc" id="L54">    public void setDailyRate(double dailyRate) { this.dailyRate = dailyRate; }</span>
+
+<span class="fc" id="L56">    public void setAvailable(boolean available) { this.available = available; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

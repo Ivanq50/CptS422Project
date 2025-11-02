@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Rental.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.model</a> &gt; <span class="el_source">Rental.java</span></div><h1>Rental.java</h1><pre class="source lang-java linenums">package org.cpts422.carrentalapp.model;
+
+import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Entity
+<span class="fc" id="L8">public class Rental {</span>
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = &quot;user_id&quot;, nullable = false)
+    private AppUser user;
+
+    @ManyToOne
+    @JoinColumn(name = &quot;vehicle_id&quot;, nullable = false)
+    private Vehicle vehicle;
+
+    @Column(nullable = false)
+    private LocalDate rentedAt;
+
+    @Column(nullable = false)
+    private LocalDate expectedReturnAt;
+
+    private LocalDate returnedAt;
+
+    @Column(nullable = false)
+    private double totalCharge;
+
+    private Integer daysPaid;
+    private Double penaltyCharge;
+
+    private LocalDateTime rentedAtDateTime;   // when the rental actually started
+    private LocalDateTime returnedAtDateTime; // when the user actually returned
+
+    // Getters and Setters
+<span class="fc" id="L39">    public Long getId() { return id; }</span>
+<span class="fc" id="L40">    public void setId(Long id) { this.id = id; }</span>
+<span class="fc" id="L41">    public AppUser getUser() { return user; }</span>
+<span class="fc" id="L42">    public void setUser(AppUser user) { this.user = user; }</span>
+<span class="fc" id="L43">    public Vehicle getVehicle() { return vehicle; }</span>
+<span class="fc" id="L44">    public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }</span>
+<span class="fc" id="L45">    public LocalDate getRentedAt() { return rentedAt; }</span>
+<span class="fc" id="L46">    public void setRentedAt(LocalDate rentedAt) { this.rentedAt = rentedAt; }</span>
+<span class="fc" id="L47">    public LocalDate getExpectedReturnAt() { return expectedReturnAt; }</span>
+<span class="fc" id="L48">    public void setExpectedReturnAt(LocalDate expectedReturnAt) { this.expectedReturnAt = expectedReturnAt; }</span>
+<span class="fc" id="L49">    public LocalDate getReturnedAt() { return returnedAt; }</span>
+<span class="fc" id="L50">    public void setReturnedAt(LocalDate returnedAt) { this.returnedAt = returnedAt; }</span>
+<span class="fc" id="L51">    public double getTotalCharge() { return totalCharge; }</span>
+<span class="fc" id="L52">    public void setTotalCharge(double totalCharge) { this.totalCharge = totalCharge; }</span>
+<span class="fc" id="L53">    public Integer getDaysPaid() { return daysPaid; }</span>
+<span class="fc" id="L54">    public void setDaysPaid(Integer daysPaid) { this.daysPaid = daysPaid; }</span>
+<span class="nc" id="L55">    public Double getPenaltyCharge() { return penaltyCharge; }</span>
+<span class="nc" id="L56">    public void setPenaltyCharge(Double penaltyCharge) { this.penaltyCharge = penaltyCharge; }</span>
+<span class="fc" id="L57">    public LocalDateTime getRentedAtDateTime() { return rentedAtDateTime; }</span>
+<span class="fc" id="L58">    public void setRentedAtDateTime(LocalDateTime dt) { this.rentedAtDateTime = dt; }</span>
+<span class="nc" id="L59">    public LocalDateTime getReturnedAtDateTime() { return returnedAtDateTime; }</span>
+<span class="nc" id="L60">    public void setReturnedAtDateTime(LocalDateTime dt) { this.returnedAtDateTime = dt; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

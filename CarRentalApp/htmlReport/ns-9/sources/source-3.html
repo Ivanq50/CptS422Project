@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > AppUserRepository</title>
+  <title>Coverage Report > RentalRepository</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -22,16 +22,25 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">org.cpts422.carrentalapp.repo</a>
 </div>
 
-<h1>Coverage Summary for Class: AppUserRepository (org.cpts422.carrentalapp.repo)</h1>
+<h1>Coverage Summary for Class: RentalRepository (org.cpts422.carrentalapp.repo)</h1>
 
 <table class="coverageStats">
+
 <tr>
   <th class="name">Class</th>
 </tr>
+  <tr>
+    <td class="name">RentalRepository$MockitoMock$tIc4Qfez</td>
+  </tr>
+  <tr>
+    <td class="name">RentalRepository$MockitoMock$tIc4Qfez$auxiliary$6rB6bSRR</td>
+  </tr>
+  <tr>
+    <td class="name">RentalRepository$MockitoMock$tIc4Qfez$auxiliary$sunoP2MZ</td>
+  </tr>
 <tr>
-  <td class="name">AppUserRepository</td>
+  <td class="name"><strong>Total</strong></td>
 </tr>
-
 </table>
 
 <br/>
@@ -39,30 +48,21 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;/*
-&nbsp;Finds all users in the database by username and driver&#39;s license (Used for Log in)
-&nbsp;*/
+<code class="sourceCode" id="sourceCode">&nbsp;package org.cpts422.carrentalapp.repo;
 &nbsp;
-&nbsp;// Created by : Yevin
-&nbsp;// Created on : Sep 22
-&nbsp;
-&nbsp;// Last Updated by : Yevin
-&nbsp;// Last Updated on : Sep 22
-&nbsp;
-&nbsp;package org.cpts422.carrentalapp.repo;
-&nbsp;
-&nbsp;import org.cpts422.carrentalapp.model.AppUser;
+&nbsp;import org.cpts422.carrentalapp.model.Rental;
 &nbsp;import org.springframework.data.jpa.repository.JpaRepository;
 &nbsp;
+&nbsp;import java.util.List;
 &nbsp;import java.util.Optional;
 &nbsp;
-&nbsp;public interface AppUserRepository extends JpaRepository&lt;AppUser, Long&gt;
-&nbsp;{
-&nbsp;    boolean existsByUsername(String username);
-&nbsp;    boolean existsByDriversLicenseNumber(String driversLicenseNumber);
-&nbsp;    Optional&lt;AppUser&gt; findByUsername(String username);
+&nbsp;public interface RentalRepository extends JpaRepository&lt;Rental, Long&gt; {
+&nbsp;    List&lt;Rental&gt; findByUserIdAndReturnedAtIsNull(Long userId);
+&nbsp;    long countByUserIdAndReturnedAtIsNull(Long userId);
+&nbsp;    boolean existsByUserIdAndReturnedAtIsNull(Long userId);
+&nbsp;    Optional&lt;Rental&gt; findFirstByUserIdAndReturnedAtIsNull(Long userId);
+&nbsp;    List&lt;Rental&gt; findByUserIdOrderByRentedAtDesc(Long userId);
 &nbsp;}
-&nbsp;
 </code>
 </pre>
 </div>
@@ -86,7 +86,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-10-29 19:04</div>
+    <div style="float:right;">generated on 2025-11-02 09:05</div>
 </div>
 </body>
 </html>

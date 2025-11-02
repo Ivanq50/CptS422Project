@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthenticationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in CarRentalApp Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.cpts422.carrentalapp.web</a> &gt; <span class="el_source">AuthenticationController.java</span></div><h1>AuthenticationController.java</h1><pre class="source lang-java linenums">package org.cpts422.carrentalapp.web;
+
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import org.cpts422.carrentalapp.model.AppUser;
+import org.cpts422.carrentalapp.model.MembershipType;
+import org.cpts422.carrentalapp.service.AuthenticationService;
+import org.cpts422.carrentalapp.service.error.DriversLicenseTakenException;
+import org.cpts422.carrentalapp.service.error.DuplicateUsernameException;
+import org.cpts422.carrentalapp.web.datatransfers.LoginForm;
+import org.cpts422.carrentalapp.web.datatransfers.RegistrationForm;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+public class AuthenticationController {
+
+    private final AuthenticationService auth;
+
+<span class="fc" id="L22">    public AuthenticationController(AuthenticationService auth) { this.auth = auth; }</span>
+
+    // Always have dropdown options available
+    @ModelAttribute(&quot;membershipTypes&quot;)
+<span class="fc" id="L26">    public MembershipType[] membershipTypes() { return MembershipType.values(); }</span>
+
+    @GetMapping(&quot;/login&quot;)
+    public String loginPage(Model model) {
+<span class="fc" id="L30">        model.addAttribute(&quot;form&quot;, new LoginForm());</span>
+<span class="fc" id="L31">        return &quot;login&quot;;</span>
+    }
+
+    @PostMapping(&quot;/login&quot;)
+    public String login(@Valid @ModelAttribute(&quot;form&quot;) LoginForm form,
+                        BindingResult errors, HttpSession session) {
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (errors.hasErrors()) return &quot;login&quot;;</span>
+        try {
+<span class="fc" id="L39">            AppUser user = auth.authenticate(form.getUsername(), form.getPassword());</span>
+<span class="fc" id="L40">            session.setAttribute(&quot;username&quot;, user.getUsername());</span>
+<span class="fc" id="L41">            session.setAttribute(&quot;userId&quot;, user.getId());</span>
+<span class="fc" id="L42">            return &quot;redirect:/&quot;;</span>
+<span class="fc" id="L43">        } catch (IllegalArgumentException ex) {</span>
+<span class="fc" id="L44">            errors.rejectValue(&quot;password&quot;, &quot;invalid&quot;, ex.getMessage());</span>
+<span class="fc" id="L45">            return &quot;login&quot;;</span>
+        }
+    }
+
+    @GetMapping(&quot;/register&quot;)
+    public String registerPage(Model model) {
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (!model.containsAttribute(&quot;form&quot;)) {</span>
+<span class="fc" id="L52">            model.addAttribute(&quot;form&quot;, new RegistrationForm());</span>
+        }
+<span class="fc" id="L54">        return &quot;register&quot;;</span>
+    }
+
+    @PostMapping(&quot;/register&quot;)
+    public String register(@Valid @ModelAttribute(&quot;form&quot;) RegistrationForm form,
+                           BindingResult errors) {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (errors.hasErrors()) return &quot;register&quot;;</span>
+        try {
+<span class="fc" id="L62">            auth.register(form);</span>
+<span class="fc" id="L63">            return &quot;register_successful&quot;;</span>
+<span class="fc" id="L64">        } catch (DuplicateUsernameException ex) {</span>
+<span class="fc" id="L65">            errors.rejectValue(&quot;username&quot;, &quot;duplicate&quot;, ex.getMessage());</span>
+<span class="fc" id="L66">            return &quot;register&quot;;</span>
+<span class="fc" id="L67">        } catch (DriversLicenseTakenException ex) {</span>
+<span class="fc" id="L68">            errors.rejectValue(&quot;driversLicenseNumber&quot;, &quot;duplicate&quot;, ex.getMessage());</span>
+<span class="fc" id="L69">            return &quot;register&quot;;</span>
+<span class="fc" id="L70">        } catch (RuntimeException ex) {</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">            errors.reject(&quot;registration&quot;, ex.getMessage() == null ? &quot;Registration failed.&quot; : ex.getMessage());</span>
+<span class="fc" id="L72">            return &quot;register&quot;;</span>
+        }
+    }
+
+    @PostMapping(&quot;/logout&quot;)
+    public String logout(HttpSession session) {
+<span class="fc" id="L78">        session.invalidate();</span>
+<span class="fc" id="L79">        return &quot;redirect:/&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
