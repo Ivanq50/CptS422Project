@@ -66,9 +66,9 @@ class AccountServiceTest {
 
     @Test
     void testGetByUsernameNotFound() {
-        when(userRepository.findByUsername("tytyruss")).thenReturn(Optional.empty());
+        when(userRepository.findByUsername("DNE")).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> accountService.getByUsername("tytyruss"));
+        assertThrows(UserNotFoundException.class, () -> accountService.getByUsername("DNE"));
     }
 
     @Test
