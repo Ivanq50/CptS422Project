@@ -37,10 +37,13 @@ public class CarRentalAppApplication
             vehicleRepository.save(new Vehicle("BMW", "X5", VehicleType.LUXURY, 150.0, true));
             vehicleRepository.save(new Vehicle("Ford", "Explorer", VehicleType.SUV, 90.0, true));
 
+            // adds a user to database just for easy use with scrpits
             if (!appUserRepository.existsByUsername("testuser")) {
                 AppUser testUser = new AppUser();
                 testUser.setUsername("testuser");
-                testUser.setPasswordHash(passwordEncoder.encode("password123"));                testUser.setDriversLicenseNumber("D12345678");
+                testUser.setPasswordHash(passwordEncoder.encode("password123"));
+                testUser.setAge(30);
+                testUser.setDriversLicenseNumber("D-12345678");
                 testUser.setDriversLicenseExpiry(LocalDate.now().plusYears(5));
                 testUser.setMembershipType(MembershipType.STANDARD);
                 testUser.setWalletBalance(100.0);
