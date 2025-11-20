@@ -41,7 +41,7 @@ public class CarRentalAppApplication
             if (!appUserRepository.existsByUsername("testuser")) {
                 AppUser testUser = new AppUser();
                 testUser.setUsername("testuser");
-                testUser.setPasswordHash(passwordEncoder.encode("password123"));
+                testUser.setPasswordHash(passwordEncoder.encode("securePassword123"));
                 testUser.setAge(30);
                 testUser.setDriversLicenseNumber("D-12345678");
                 testUser.setDriversLicenseExpiry(LocalDate.now().plusYears(5));

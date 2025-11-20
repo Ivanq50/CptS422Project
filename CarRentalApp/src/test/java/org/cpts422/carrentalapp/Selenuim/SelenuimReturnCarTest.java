@@ -41,7 +41,7 @@ public class SelenuimReturnCarTest {
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")))
                 .sendKeys("testuser");
-        driver.findElement(By.id("password")).sendKeys("password123");
+        driver.findElement(By.id("password")).sendKeys("securePassword123");
         driver.findElement(By.cssSelector("button.btn[type='submit']")).click();
         driver.get(baseUrl + "/vehicles");
 
