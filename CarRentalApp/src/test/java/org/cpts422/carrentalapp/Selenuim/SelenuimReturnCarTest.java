@@ -62,7 +62,7 @@ public class SelenuimReturnCarTest {
         WebElement firstReturnButton = returnButtonsBefore.get(0);
         firstReturnButton.click();
 
-        // 5) Explicitly wait for 'return'
+        // Explicitly wait for 'return'
         boolean sawReturnMessage = wait.until(driver -> {
             List<WebElement> messages =
                     driver.findElements(By.xpath("//p[normalize-space()!='']"));
