@@ -26,7 +26,7 @@ export default function () {
     const res = http.post(`${BASE_URL}/register`, payload);
 
     check(res, {
-        'POST /register status 200 or 302': (r) => r.status === 200 || r.status === 302,
+        'POST /register status 200': (r) => r.status === 200,
         'register response < 800ms': (r) => r.timings.duration < 800,
     });
 

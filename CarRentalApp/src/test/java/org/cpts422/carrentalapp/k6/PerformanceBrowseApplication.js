@@ -40,7 +40,7 @@ export default function () {
     // My rentals
     res = http.get(`${BASE_URL}/my-rentals`);
     check(res, {
-        'GET /my-rentals is 200 or 302': (r) => r.status === 200 || r.status === 302,
+        'GET /my-rentals is 200': (r) => r.status === 200,
         'GET /my-rentals < 800ms': (r) => r.timings.duration < 800,
     });
 
