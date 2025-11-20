@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > VehicleRepository</title>
+  <title>Coverage Report > RentalRepository</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -22,7 +22,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">org.cpts422.carrentalapp.repo</a>
 </div>
 
-<h1>Coverage Summary for Class: VehicleRepository (org.cpts422.carrentalapp.repo)</h1>
+<h1>Coverage Summary for Class: RentalRepository (org.cpts422.carrentalapp.repo)</h1>
 
 <table class="coverageStats">
 
@@ -30,13 +30,13 @@ Current scope:     <a href="../../index.html">all classes</a>
   <th class="name">Class</th>
 </tr>
   <tr>
-    <td class="name">VehicleRepository$MockitoMock$qMUwv4PV</td>
+    <td class="name">RentalRepository$MockitoMock$4hGEHLdq</td>
   </tr>
   <tr>
-    <td class="name">VehicleRepository$MockitoMock$qMUwv4PV$auxiliary$laSKtvx7</td>
+    <td class="name">RentalRepository$MockitoMock$4hGEHLdq$auxiliary$1fBCunbc</td>
   </tr>
   <tr>
-    <td class="name">VehicleRepository$MockitoMock$qMUwv4PV$auxiliary$vVdJZELT</td>
+    <td class="name">RentalRepository$MockitoMock$4hGEHLdq$auxiliary$eEAZ6kZG</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -50,12 +50,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package org.cpts422.carrentalapp.repo;
 &nbsp;
-&nbsp;import org.cpts422.carrentalapp.model.Vehicle;
+&nbsp;import org.cpts422.carrentalapp.model.Rental;
 &nbsp;import org.springframework.data.jpa.repository.JpaRepository;
-&nbsp;import java.util.List;
 &nbsp;
-&nbsp;public interface VehicleRepository extends JpaRepository&lt;Vehicle, Long&gt; {
-&nbsp;    List&lt;Vehicle&gt; findByAvailable(boolean available);
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;public interface RentalRepository extends JpaRepository&lt;Rental, Long&gt; {
+&nbsp;    List&lt;Rental&gt; findByUserIdAndReturnedAtIsNull(Long userId);
+&nbsp;    long countByUserIdAndReturnedAtIsNull(Long userId);
+&nbsp;    boolean existsByUserIdAndReturnedAtIsNull(Long userId);
+&nbsp;    Optional&lt;Rental&gt; findFirstByUserIdAndReturnedAtIsNull(Long userId);
+&nbsp;    List&lt;Rental&gt; findByUserIdOrderByRentedAtDesc(Long userId);
 &nbsp;}
 </code>
 </pre>
@@ -80,7 +86,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-11-02 09:05</div>
+    <div style="float:right;">generated on 2025-11-06 14:25</div>
 </div>
 </body>
 </html>
