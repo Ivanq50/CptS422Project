@@ -1,0 +1,57 @@
+graph TD
+%% Nodes
+    subgraph "Web Layer (Controllers)"
+        AC[AccountController]
+        AuC[AuthenticationController]
+        CC[CartController]
+        HC[HomeController]
+        RC[RentalController]
+        VC[VehicleController]
+        GEH[GlobalExceptionHandler]
+    end
+
+    subgraph "Service Layer"
+        AS[AccountService]
+        AuS[AuthenticationService]
+        CS[CartService]
+        PS[PricingService]
+        RS[RentalService]
+        VS[VehicleService]
+    end
+
+    subgraph "Data Layer (Repositories)"
+        UR[AppUserRepository]
+        RR[RentalRepository]
+        VR[VehicleRepository]
+    end
+
+%% Relationships: Controllers to Services
+    AC -->|calls| AS
+    AuC -->|calls| AuS
+    CC -->|calls| CS
+    CC -->|calls| AS
+    CC -->|calls| VS
+    CC -->|calls| RS
+    CC -->|calls| PS
+    RC -->|calls| RS
+    VC -->|calls| VS
+    VC -->|calls| AS
+
+%% Relationships: Services to Repositories & Services
+    AS -->|uses| UR
+    AuS -->|uses| UR
+    CS -->|uses| PS
+    RS -->|uses| RR
+    RS -->|uses| VR
+    RS -->|uses| UR
+    RS -->|uses| PS
+    VS -->|uses| VR
+
+%% Styling
+    classDef controller fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef service fill:#bbf,stroke:#333,stroke-width:2px;
+    classDef repo fill:#dfd,stroke:#333,stroke-width:2px;
+
+    class AC,AuC,CC,HC,RC,VC,GEH controller;
+    class AS,AuS,CS,PS,RS,VS service;
+    class UR,RR,VR repo;
